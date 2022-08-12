@@ -12,7 +12,7 @@ const config: Config = {
   space: {
     name: "RZL",
     color: "orange",
-    mqtt: "ws://map.rzl.so:1884"
+    mqtt: "wss://mqtt.rzl.so:1884"
   },
   topics: [
     {
