@@ -426,7 +426,7 @@ const config: Config = {
         }
       ]
     },
-    printerAnnette: {
+/*    printerAnnette: {
       name: "Drucker",
       position: [965, 50],
       icon: svg(icons.mdiPrinter).color(tasmota.iconColor("printerAnnette")),
@@ -444,19 +444,52 @@ const config: Config = {
           icon: svg(icons.mdiOpenInNew)
         }
       ]
-    },
+    }, */
   },
   layers: [
     {
       image: require("./assets/layers/rooms.svg"),
       baseLayer: true,
-      name: "RaumZeitLabor",
+      name: "Floorplan",
       defaultVisibility: "visible",
       opacity: 0.7,
       bounds: {
         topLeft: [0, 0],
         bottomRight: [1100, 900]
       }
+    },
+    {
+      image: require("./assets/layers/details.svg"),
+      baseLayer: false,
+      name: "Details",
+      defaultVisibility: "visible",
+      opacity: 0.7,
+      bounds: {
+        topLeft: [0, 0],
+        bottomRight: [1100, 900]
+      }
+    },
+    {
+      image: require("./assets/layers/labels.svg"),
+      baseLayer: false,
+      name: "Labels",
+      defaultVisibility: "visible",
+      opacity: 1,
+      bounds: {
+        topLeft: [0, 0],
+        bottomRight: [1100, 900]
+      }
+    },
+    {
+      image: require("./assets/layers/lights.svg"),
+      baseLayer: false,
+      name: "Lights",
+      defaultVisibility: "invisible",
+      opacity: 1,
+      bounds: {
+        topLeft: [0, 0],
+        bottomRight: [1100, 900]
+      },
     },
   ]
 };
