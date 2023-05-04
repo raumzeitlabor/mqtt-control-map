@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { Map, ImageOverlay, Marker, LayersControl } from "react-leaflet";
+import { Map, ImageOverlay, Marker, LayersControl, LayerGroup} from "react-leaflet";
 import { CRS, point, divIcon } from "leaflet";
 import map from "lodash/map";
 import filter from "lodash/filter";
@@ -84,8 +84,8 @@ const isVisible = (props: ControlMapProps) =>
     return false;
   };
 
-const renderMarkers = (props: ControlMapProps) =>
-  map(filter(props.controls, isVisible(props)), renderMarker(props));
+const renderMarkers = (props: ControlMapProps, layer: Layer) =>
+  map(layer.controls, renderMarker(props));
 
 const renderLayer = (layer: Layer) => {
   const LayersControlType =
@@ -101,12 +101,16 @@ const renderLayer = (layer: Layer) => {
       addOverlay={(_layer, _name, _checked) => {}}
       // eslint-disable-next-line fp/no-nil
       addBaseLayer={(_layer, _name, _checked) => {}}>
-      <ImageOverlay url={layer.image}
+    <LayerGroup>
+    {layer.name == "Lights" && <Marker position={convertPoint([965, 50])}></Marker>}
+    <ImageOverlay url={layer.image}
         bounds={[
           convertPoint(layer.bounds.topLeft),
           convertPoint(layer.bounds.bottomRight)
         ]}
         opacity={layer.opacity || 1} />
+
+    </LayerGroup>
     </LayersControlType>
   );
 };
@@ -122,8 +126,8 @@ const ControlMap = (props: ControlMapProps) => (
     zoom={props.zoom}
     crs={CRS.Simple}
     leaflet={{}}>
-    {renderMarkers(props)}
     {renderLayers(props)}
+
   </Map>
 );
 

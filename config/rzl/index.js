@@ -456,7 +456,8 @@ const config: Config = {
       bounds: {
         topLeft: [0, 0],
         bottomRight: [1100, 900]
-      }
+      },
+      controls: {}
     },
     {
       image: require("./assets/layers/details.svg"),
@@ -467,7 +468,8 @@ const config: Config = {
       bounds: {
         topLeft: [0, 0],
         bottomRight: [1100, 900]
-      }
+      },
+      controls: {}
     },
     {
       image: require("./assets/layers/labels.svg"),
@@ -478,18 +480,78 @@ const config: Config = {
       bounds: {
         topLeft: [0, 0],
         bottomRight: [1100, 900]
-      }
+      },
+      controls: {}
     },
     {
       image: require("./assets/layers/lights.svg"),
       baseLayer: false,
       name: "Lights",
-      defaultVisibility: "invisible",
-      opacity: 1,
+      defaultVisibility: "hidden",
+      opacity: 0.5,
       bounds: {
         topLeft: [0, 0],
         bottomRight: [1100, 900]
       },
+      controls: {
+        printerAnnette: {
+          name: "Drucker",
+          position: [965, 50],
+          icon: svg(icons.mdiPrinter).color(tasmota.iconColor("printerAnnette")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Drucker",
+              topic: "printerAnnette",
+              icon: svg(icons.mdiPower)
+            },
+            {
+              type: "link",
+              link: "http://annette.rzl/",
+              text: "Open Annette",
+              icon: svg(icons.mdiOpenInNew)
+            }
+          ]
+        },
+        printer3D: {
+          name: "Ultimaker 3",
+          position: [890, 50],
+          icon: svg(icons.mdiPrinter3d).color(({printer3DStatus}) =>
+            ({
+              awaitingInteraction: hex("#b3b300"),
+              printing: hex("#00ff00"),
+              idle: hex("#000000"),
+              unavailable: hex("#888888"),
+              error: hex("#ff0000")
+            })[printer3DStatus]),
+          ui: [
+            {
+              type: "link",
+              link: "http://ultimaker.rzl/",
+              text: "Open Webinterface",
+              icon: svg(icons.mdiOpenInNew)
+            },
+            {
+              type: "section",
+              text: "Current Job"
+            },
+            {
+              type: "progress",
+              icon: svg(icons.mdiRotateRight),
+              min: 0,
+              max: 1,
+              text: "Printing Progress",
+              topic: "printer3DProgresss"
+            },
+            {
+              type: "text",
+              text: "Time Left",
+              icon: svg(icons.mdiClock),
+              topic: "printer3Dremaining"
+            }
+          ]
+        },
+      }
     },
   ]
 };

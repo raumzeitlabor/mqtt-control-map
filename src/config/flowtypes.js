@@ -126,15 +126,17 @@ export type Layer = {
   name: string,
   baseLayer?: boolean,
   defaultVisibility: "visible" | "hidden",
+  currentlyVisible: boolean,
   opacity?: number,
   bounds: {
     topLeft: Point,
     bottomRight: Point
-  }
+  },
+  controls?: Controls
 };
+
 export type Config = {
   space: Space,
   topics: Topics | Array<Topics>,
-  controls: Controls,
   layers: Array<Layer>
 };
