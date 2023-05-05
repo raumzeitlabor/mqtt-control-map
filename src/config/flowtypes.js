@@ -126,7 +126,6 @@ export type Layer = {
   name: string,
   baseLayer?: boolean,
   defaultVisibility: "visible" | "hidden",
-  currentlyVisible: boolean,
   opacity?: number,
   bounds: {
     topLeft: Point,

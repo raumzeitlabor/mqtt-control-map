@@ -20,7 +20,6 @@ export type ControlMapProps = {
   height: number,
   zoom: number,
   layers: Array<Layer>,
-  controls: Controls,
   search: string,
   onChangeControl: (control: Control) => void
 };
@@ -87,7 +86,7 @@ const isVisible = (props: ControlMapProps) =>
 const renderMarkers = (props: ControlMapProps, layer: Layer) =>
   map(layer.controls, renderMarker(props));
 
-const renderLayer = (layer: Layer) => {
+const renderLayer = (props: ControlMapProps, layer: Layer) => {
   const LayersControlType =
     layer.baseLayer ? LayersControl.BaseLayer : LayersControl.Overlay;
   return (
@@ -102,7 +101,7 @@ const renderLayer = (layer: Layer) => {
       // eslint-disable-next-line fp/no-nil
       addBaseLayer={(_layer, _name, _checked) => {}}>
     <LayerGroup>
-    {layer.name == "Lights" && <Marker position={convertPoint([965, 50])}></Marker>}
+    {renderMarkers(props, layer)}
     <ImageOverlay url={layer.image}
         bounds={[
           convertPoint(layer.bounds.topLeft),
@@ -117,7 +116,7 @@ const renderLayer = (layer: Layer) => {
 
 const renderLayers = (props: ControlMapProps) => (
   <LayersControl position="topright">
-    {props.layers.map(renderLayer)}
+    {props.layers.map(layer => renderLayer(props, layer))}
   </LayersControl>
 );
 

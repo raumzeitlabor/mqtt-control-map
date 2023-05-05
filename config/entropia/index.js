@@ -28,27 +28,6 @@ const config: Config = {
       }
     }
   ],
-  controls: {
-    hauptraumTableLight: {
-      name: "Hauptraum Tisch",
-      position: [450, 450],
-      icon: svg(icons.mdiWhiteBalanceIridescent),
-      ui: [
-        {
-          type: "toggle",
-          text: "Licht",
-          topic: "hauptraumTableLight",
-          icon: svg(icons.mdiPower)
-        },
-        {
-          type: "toggle",
-          text: "Licht",
-          topic: "hauptraumTableLightOnHack",
-          icon: svg(icons.mdiPower)
-        }
-      ]
-    }
-  },
   layers: [
     {
       image: require("./assets/layers/rooms.svg"),
@@ -59,7 +38,28 @@ const config: Config = {
       bounds: {
         topLeft: [0, 0],
         bottomRight: [720, 680]
-      }
+      },
+      controls: {
+        hauptraumTableLight: {
+          name: "Hauptraum Tisch",
+          position: [450, 450],
+          icon: svg(icons.mdiWhiteBalanceIridescent),
+          ui: [
+            {
+              type: "toggle",
+              text: "Licht",
+              topic: "hauptraumTableLight",
+              icon: svg(icons.mdiPower)
+            },
+            {
+              type: "toggle",
+              text: "Licht",
+              topic: "hauptraumTableLightOnHack",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        }
+      },
     }
   ]
 };
