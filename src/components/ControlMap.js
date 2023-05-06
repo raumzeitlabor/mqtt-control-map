@@ -117,7 +117,7 @@ const renderLayer = (props: ControlMapProps, layer: Layer) => {
 };
 
 const renderLayers = (props: ControlMapProps) => (
-  <LayersControl position="topright">
+  <LayersControl position="topright" collapsed={false}>
     {props.layers.map(layer => renderLayer(props, layer))}
   </LayersControl>
 );
