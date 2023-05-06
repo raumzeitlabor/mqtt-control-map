@@ -1,6 +1,4 @@
 // @flow
-import type { Color } from "config/colors";
-
 declare type Map<K,V> = { [K]: V };
 
 declare type Classes = {
