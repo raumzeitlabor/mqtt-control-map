@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { Map, ImageOverlay, Marker, LayersControl, LayerGroup} from "react-leaflet";
+import { MapContainer, ImageOverlay, Marker, LayersControl, LayerGroup } from "react-leaflet";
 import { CRS, point, divIcon } from "leaflet";
 import map from "lodash/map";
 import filter from "lodash/filter";
@@ -44,7 +44,9 @@ const renderMarker = (props: ControlMapProps) =>
       {({ state }) => (
         <Marker position={convertPoint(control.position)}
           icon={createLeafletIcon(control, state)}
-          onClick={() => props.onChangeControl(control)}
+          eventHandlers={{
+            click: () => props.onChangeControl(control)
+          }}
         >
         </Marker>
       )}
@@ -121,13 +123,12 @@ const renderLayers = (props: ControlMapProps) => (
 );
 
 const ControlMap = (props: ControlMapProps) => (
-  <Map center={center(props)}
+  <MapContainer center={center(props)}
     zoom={props.zoom}
     crs={CRS.Simple}
     leaflet={{}}>
     {renderLayers(props)}
-
-  </Map>
+  </MapContainer>
 );
 
 export default ControlMap;
