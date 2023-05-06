@@ -1666,6 +1666,7 @@ const config: Config = {
           ])
         }
       }
+    }
   ]
 };
 
