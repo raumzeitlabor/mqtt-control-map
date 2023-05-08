@@ -14,6 +14,7 @@ const config: Config = {
     color: "blue",
     mqtt: "ws://mqtt.rzl.so:1884"
   },
+  collapseLayers:false,
   topics: [{
 /************ Raum status  Zeugs ************/
       doorStatus: {

@@ -20,6 +20,7 @@ export type ControlMapProps = {
   height: number,
   zoom: number,
   layers: Array<Layer>,
+  collapseLayers?: boolean,
   search: string,
   onChangeControl: (control: Control) => void
 };
@@ -117,7 +118,7 @@ const renderLayer = (props: ControlMapProps, layer: Layer) => {
 };
 
 const renderLayers = (props: ControlMapProps) => (
-  <LayersControl position="topright" collapsed={false}>
+  <LayersControl position="topright" collapsed={props.collapseLayers}>
     {props.layers.map(layer => renderLayer(props, layer))}
   </LayersControl>
 );

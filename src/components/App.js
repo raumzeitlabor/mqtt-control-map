@@ -72,6 +72,7 @@ class App extends React.PureComponent<AppProps & Classes, AppState> {
   controlMap = (search: string) =>
     <ControlMap width={1000} height={700} zoom={0}
       layers={this.props.config.layers}
+      collapseLayers={this.props.config.collapseLayers == false ? false : true}
       onChangeControl={this.changeControl}
       search={search}
     />;

@@ -137,5 +137,6 @@ export type Layer = {
 export type Config = {
   space: Space,
   topics: Topics | Array<Topics>,
-  layers: Array<Layer>
+  layers: Array<Layer>,
+  collapseLayers?: boolean
 };
