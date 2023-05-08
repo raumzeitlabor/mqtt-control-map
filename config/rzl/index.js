@@ -3,7 +3,7 @@ import type { Config } from "config/flowtypes";
 import * as types from "config/types";
 import { hex, rainbow } from "config/colors";
 import { svg, withState } from "config/icon";
-import { esper, tasmota } from "./utils";
+import { esper, tasmota, shelly } from "./utils";
 import * as icons from "@mdi/js";
 
 import * as onkyo from "./onkyo";
@@ -12,65 +12,10 @@ const config: Config = {
   space: {
     name: "RZL",
     color: "blue",
-    mqtt: "wss://mqtt.rzl.so:1884"
+    mqtt: "ws://mqtt.rzl.so:1884"
   },
-  topics: [
-    {
-      snackbarDimmmer: {
-        state: {
-          name: "/service/snackbar/Dimmer",
-          type: types.string
-        },
-        command: {
-          name: "cmnd/tasmota-snackbar/dimmer",
-          type: types.string
-        },
-        defaultValue: "0"
-      },
-      snackbarScheme: {
-        state: {
-          name: "/service/snackbar/Scheme",
-          type: types.string
-        },
-        command: {
-          name: "cmnd/tasmota-snackbar/scheme",
-          type: types.string
-        },
-        defaultValue: "0"
-      },
-      snackbarSpeed: {
-        state: {
-          name: "/service/snackbar/Speed",
-          type: types.string
-        },
-        command: {
-          name: "cmnd/tasmota-snackbar/speed",
-          type: types.string
-        },
-        defaultValue: "0"
-      },
-      snackbarLedOnline: {
-        state: {
-          name: "tele/tasmota-snackbar/LWT",
-          type: types.option({ Online: "on", online: "on",
-            Offline: "off", offline: "off" })
-        },
-        defaultValue: "off"
-      },
-      loetarbeitsplatz4: {
-        state: {
-          name: "stat/sonoff4/POWER",
-          type: types.option({ ON: "on", OFF: "off" })
-        },
-        defaultValue: "off"
-      },
-      loetarbeitsplatz5: {
-        state: {
-          name: "stat/sonoff5/POWER",
-          type: types.option({ ON: "on", OFF: "off" })
-        },
-        defaultValue: "off"
-      },
+  topics: [{
+/************ Raum status  Zeugs ************/
       doorStatus: {
         state: {
           name: "/service/status",
@@ -100,6 +45,7 @@ const config: Config = {
         },
         defaultValue: ""
       },
+/************ Beamer ************/
       projector: {
         state: {
           name: "/service/beamer/state",
@@ -126,6 +72,7 @@ const config: Config = {
         },
         defaultValue: "unknown"
       },
+/************ Ultimaker ************/
       printer3DStatus: {
         state: {
           name: "/service/ultimaker/state",
@@ -175,110 +122,61 @@ const config: Config = {
         defaultValue: "off"
       },
     },
-    //Tasmota-Dosen
+/************ Steckdosen (Sonoffs mit Tasmota) ************/
+    tasmota.topics("1", "Boiler"),
     tasmota.topics("2", "printerAnnette"),
-    tasmota.topics("6", "snackbar"),
-    tasmota.topics("7", "infoscreen"),
-
+    tasmota.topics("4", "Infoscreen"),
+    tasmota.topics("5", "TelekomSign"),
+    tasmota.topics("6", "Textilpresse"),
+    tasmota.topics("11", "TischMitte"),
+    tasmota.topics("12", "TischWhiteboard"),
+    tasmota.topics("13", "TischBeamer"),
+    tasmota.topics("14", "E-EckeNetworkSwitch"),
+    tasmota.topics("16", "Hauptraum_AV"),
+/************ Lichter (Shellies) ************/
+    shelly.topics("E-Ecke_licht", "E-Ecke_licht", "0"),
+    shelly.topics("Flurlicht_vorne", "Flurlicht_vorne", "0"),
+    shelly.topics("Flurlicht_hinten", "Flurlicht_hinten", "0"),
+    shelly.topics("Foodarea", "Foodarea_lichter", "0"),
+    shelly.topics("Kueche", "Foodarea_lichter", "1"),
+    shelly.topics("Lounge_putzlicht", "Lounge_lichter", "0"),
+    shelly.topics("Lounge_buntlicht", "Lounge_lichter", "1"),
+    shelly.topics("Workshop_putzlicht", "Workshop_lichter", "0"),
+    shelly.topics("Workshop_buntlicht", "Workshop_lichter", "1"),
+    shelly.topics("Hauptraum_putz_white", "Hauptraum_lichter", "0"),
+    shelly.topics("hauptraum_putz_beam", "Hauptraum_lichter", "1"),
+    shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"), //replace by RGBW soon
+    shelly.topics("Speaker_light", "Speaker_light", "0"),
+/************ Lichter (RGBW shellies) ************/
+    
+/************ Onkyos ************/
     onkyo.topics,
   ],
+
+/********************************************/
+/****************  LAYER   ******************/
+/********************************************/
   layers: [
     {
       image: require("./assets/layers/rooms.svg"),
       baseLayer: true,
-      name: "Floorplan",
+      name: "Devices",
       defaultVisibility: "visible",
       opacity: 0.7,
       bounds: {
         topLeft: [0, 0],
-        bottomRight: [1100, 900]
+        bottomRight: [1030, 718]
       },
       controls: {
         ...onkyo.controls,
-        ledStahltrager: {
-          name: "LED Stahlträger",
-          position: [340, 590],
-          icon: svg(icons.mdiWhiteBalanceIridescent).color(({ledStahltraeger}) =>
-            (ledStahltraeger === "on" ? rainbow : hex("#000000"))),
-          ui: [
-            {
-              type: "toggle",
-              text: "Stahlträger LED",
-              topic: "ledStahltraeger",
-              icon: svg(icons.mdiPower)
-            }
-          ]
-        },
-        snackbar: {
-          name: "Snackbar",
-          position: [510, 500],
-          icon: svg(icons.mdiFridge).color(
-            tasmota.iconColor("snackbar", hex("#E20074"))),
-          ui: [
-            {
-              type: "toggle",
-              text: "Snackbar",
-              topic: "snackbar",
-              icon: svg(icons.mdiPower)
-            },
-            {
-              type: "section",
-              text: "LED-Streifen"
-            },
-            {
-              type: "text",
-              text: "LED-Streifen",
-              topic: "snackbarLedOnline",
-              icon: svg(icons.mdiWhiteBalanceIridescent)
-            },
-            {
-              type: "dropDown",
-              text: "Modus",
-              topic: "snackbarScheme",
-              options: {
-                "0": "Single Color",
-                "2": "Cycle RGB",
-                "3": "Cycle RBG",
-                "4": "Random cycle Random",
-                "6": "Incandescent Pattern",
-                "7": "RGB Pattern",
-                "8": "Christmas Pattern",
-                "9": "Hanukkah Pattern",
-                "10": "Kwanzaa Pattern",
-                "11": "Rainbow Pattern",
-                "12": "Fire Pattern"
-              },
-              icon: svg(icons.mdiCog),
-              enableCondition: ({ snackbarLedOnline }) => snackbarLedOnline === "on"
-            },
-            {
-              type: "slider",
-              text: "Helligkeit",
-              topic: "snackbarDimmmer",
-              min: 0,
-              max: 100,
-              icon: svg(icons.mdiBrightness7),
-              enableCondition: ({ snackbarLedOnline }) => snackbarLedOnline === "on"
-            },
-            {
-              type: "slider",
-              text: "Animations-Geschwindigkeit",
-              topic: "snackbarSpeed",
-              min: 0,
-              max: 20,
-              icon: svg(icons.mdiSpeedometer),
-              enableCondition: ({ snackbarLedOnline }) => snackbarLedOnline === "on"
-            }
-          ]
-        },
         cashdesk: {
           name: "Cashdesk",
-          position: [663, 610],
-          icon: svg(icons.mdiCurrencyUsdCircle),
+          position: [645, 580],
+          icon: svg(icons.mdiCashRegister),
           ui: [
             {
               type: "link",
-              link: "http://cashdesk.rzl:8000/",
+              link: "http://cashdesk.rzl.so/",
               text: "Open Cashdesk",
               icon: svg(icons.mdiOpenInNew)
             }
@@ -305,37 +203,9 @@ const config: Config = {
             }
           ]
         },
-        loetarbeitsplatz4: {
-          name: "Lötarbeitsplatz",
-          position: [205, 455],
-          icon: svg(icons.mdiEyedropperVariant).color(({loetarbeitsplatz4}) =>
-            (loetarbeitsplatz4 === "on" ? hex("#FF0000") : hex("#000000"))),
-          ui: [
-            {
-              type: "text",
-              text: "Status",
-              topic: "loetarbeitsplatz4",
-              icon: svg(icons.mdiEyedropperVariant)
-            }
-          ]
-        },
-        loetarbeitsplatz5: {
-          name: "Lötarbeitsplatz",
-          position: [205, 405],
-          icon: svg(icons.mdiEyedropperVariant).color(({loetarbeitsplatz4}) =>
-            (loetarbeitsplatz4 === "on" ? hex("#FF0000") : hex("#000000"))),
-          ui: [
-            {
-              type: "text",
-              text: "Status",
-              topic: "loetarbeitsplatz5",
-              icon: svg(icons.mdiEyedropperVariant)
-            }
-          ]
-        },
         door: {
           name: "Tür",
-          position: [1020, 430],
+          position: [1025, 405],
           icon: svg(icons.mdiSwapHorizontal).color(({doorStatus}) =>
             (doorStatus === "on" ? hex("#00FF00") : hex("#FF0000"))),
           ui: [
@@ -343,13 +213,6 @@ const config: Config = {
               type: "link",
               link: "http://s.rzl.so",
               text: "Open Status Page",
-              icon: svg(icons.mdiOpenInNew)
-            },
-            {
-              type: "link",
-              // eslint-disable-next-line max-len
-              link: "http://kunterbunt.vm.rzl/dashboard/db/allgemeines-copy-ranlvor?orgId=1",
-              text: "RZL-Dashboard",
               icon: svg(icons.mdiOpenInNew)
             },
             {
@@ -365,12 +228,6 @@ const config: Config = {
               icon: svg(icons.mdiWifi)
             },
             {
-              type: "toggle",
-              text: "Deko",
-              topic: "deko",
-              icon: svg(icons.mdiInvertColors)
-            },
-            {
               type: "text",
               text: "Power Hauptraum",
               topic: "powerConsumption",
@@ -380,7 +237,7 @@ const config: Config = {
         },
         infoscreen: {
           name: "Infoscreen",
-          position: [663, 560],
+          position: [645, 540],
           icon: svg(icons.mdiTelevisionGuide).flipV().color(
             tasmota.iconColor("infoscreen", hex("#4444FF"))
           ),
@@ -388,12 +245,12 @@ const config: Config = {
             {
               type: "toggle",
               text: "Infoscreen",
-              topic: "infoscreen",
+              topic: "Infoscreen",
               icon: svg(icons.mdiPower)
             },
             {
               type: "link",
-              link: "http://cashdesk.rzl:3030/rzl",
+              link: "http://infoscreen.rzl.so",
               text: "Open Infoscreen",
               icon: svg(icons.mdiOpenInNew)
             }
@@ -401,7 +258,7 @@ const config: Config = {
         },
         printer3D: {
           name: "Ultimaker 3",
-          position: [890, 50],
+          position: [890, 35],
           icon: svg(icons.mdiPrinter3d).color(({printer3DStatus}) =>
             ({
               awaitingInteraction: hex("#b3b300"),
@@ -413,7 +270,7 @@ const config: Config = {
           ui: [
             {
               type: "link",
-              link: "http://ultimaker.rzl/",
+              link: "http://ultimaker.rzl/print_jobs",
               text: "Open Webinterface",
               icon: svg(icons.mdiOpenInNew)
             },
@@ -439,7 +296,7 @@ const config: Config = {
         },
         printerAnnette: {
           name: "Drucker",
-          position: [965, 50],
+          position: [938, 30],
           icon: svg(icons.mdiPrinter).color(tasmota.iconColor("printerAnnette")),
           ui: [
             {
@@ -450,8 +307,8 @@ const config: Config = {
             },
             {
               type: "link",
-              link: "http://annette.rzl/",
-              text: "Open Annette",
+              link: "http://annette.rzl.so/",
+              text: "Open Annette Web",
               icon: svg(icons.mdiOpenInNew)
             }
           ]
@@ -466,23 +323,12 @@ const config: Config = {
       opacity: 0.7,
       bounds: {
         topLeft: [0, 0],
-        bottomRight: [1100, 900]
+        bottomRight: [1030, 718]
       },
       controls:{}
     },
     {
-      image: require("./assets/layers/labels.svg"),
-      baseLayer: false,
-      name: "Labels",
-      defaultVisibility: "visible",
-      opacity: 1,
-      bounds: {
-        topLeft: [0, 0],
-        bottomRight: [1100, 900]
-      },
-      controls: {}
-    },
-    {
+/************ Lichter (vor allem Shellies) ************/
       image: require("./assets/layers/lights.svg"),
       baseLayer: true,
       name: "Lights",
@@ -490,11 +336,163 @@ const config: Config = {
       opacity: 1,
       bounds: {
         topLeft: [0, 0],
-        bottomRight: [1100, 900]
+        bottomRight: [1030, 718]
       },
       controls: {
-
+        Flurlicht_vorne: {
+          name: "Flurlicht vorne",
+          position: [800, 405],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Flurlicht_vorne")),
+          ui: [{
+              type: "toggle",
+              text: "Licht",
+              topic: "Flurlicht_vorne",
+              icon: svg(icons.mdiPower)
+          }]
+        },
+        Flurlicht_hinten: {
+          name: "Flurlicht hinten",
+          position: [500, 405],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Flurlicht_hinten")),
+          ui: [{
+              type: "toggle",
+              text: "Licht",
+              topic: "Flurlicht_hinten",
+              icon: svg(icons.mdiPower)
+          }]
+        },
+        Lounge_lichter: {
+          name: "Lounge Beleuchtung",
+          position: [500, 605],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Lounge_putzlicht")),
+          ui: [
+          {
+            type: "toggle",
+            text: "Putz Lichter",
+            topic: "Lounge_putzlicht",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "toggle",
+            text: "RGBW Lichter",
+            topic: "Lounge_buntlicht",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "section",
+            text: "Lampe links"
+          },
+          {
+            type: "section",
+            text: "Lampe rechts"
+          },
+        ]
+        },
+        E_Ecke_licht: {
+          name: "E-Ecke Beleuchtung",
+          position: [490, 165],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("E-Ecke_licht")),
+          ui: [{
+              type: "toggle",
+              text: "Licht",
+              topic: "E-Ecke_licht",
+              icon: svg(icons.mdiPower)
+          }]
+        },
+        Foodarea: {
+          name: "Foodarea Beleuchtung",
+          position: [740, 605],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Foodarea")),
+          ui: [{
+              type: "toggle",
+              text: "Licht",
+              topic: "Foodarea",
+              icon: svg(icons.mdiPower)
+          }]
+        },
+        Kueche: {
+          name: "Kueche Beleuchtung",
+          position: [930, 605],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Kueche")),
+          ui: [{
+              type: "toggle",
+              text: "Licht",
+              topic: "Kueche",
+              icon: svg(icons.mdiPower)
+          }]
+        },
+        Workshop: {
+          name: "Workshop Beleuchtung",
+          position: [800, 165],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Workshop_putzlicht")),
+          ui: [
+          {
+            type: "toggle",
+            text: "Putz Lichter",
+            topic: "Workshop_putzlicht",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "toggle",
+            text: "RGBW Lichter",
+            topic: "Workshop_buntlicht",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "section",
+            text: "Lampe links"
+          }, {
+            type: "section",
+            text: "Lampe Mitte"
+          },
+          {
+            type: "section",
+            text: "Lampe rechts"
+          },
+        ]
+        },
+        Hauptraum: {
+          name: "Hauptraum Beleuchtung",
+          position: [190, 405],
+          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Workshop_putzlicht")),
+          ui: [
+          {
+            type: "toggle",
+            text: "Lichter Beamer",
+            topic: "hauptraum_putz_beam",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "toggle",
+            text: "Lichter Whiteboard",
+            topic: "Hauptraum_putz_white",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "toggle",
+            text: "RGBW Lichter",
+            topic: "Hauptraum_buntlicht",
+            icon: svg(icons.mdiPower)
+          }, {
+            type: "section",
+            text: "Lampe links"
+          }, {
+            type: "section",
+            text: "Lampe Mitte"
+          },
+          {
+            type: "section",
+            text: "Lampe rechts"
+          },
+        ]
+        }
       }
+    },
+    {
+      image: require("./assets/layers/labels.svg"),
+      baseLayer: false,
+      name: "Labels",
+      defaultVisibility: "hidden",
+      opacity: 1,
+      bounds: {
+        topLeft: [0, 0],
+        bottomRight: [1030, 718]
+      },
+      controls: {}
     },
   ]
 };

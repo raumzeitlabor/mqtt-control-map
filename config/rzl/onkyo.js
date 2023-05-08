@@ -5,6 +5,8 @@ import { hex } from "config/colors";
 import * as types from "config/types";
 import * as icons from "@mdi/js";
 
+//FIXME: analog zu den tasmota und shellies, muss das hier Multi-fähig gemacht werden
+
 export const topics: Topics = {
   onkyoConnection: {
     state: {

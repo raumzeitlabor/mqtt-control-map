@@ -37,6 +37,50 @@ export const tasmota = {
       return hex("#000000");
     }
 };
+
+export const shelly = {
+  topics: (name: string, topic: string, relay: string): Topics => ({
+    [name]: {
+      state: {
+        name: `shellies/${topic}/relay/${relay}`,
+        type: types.option({ on: "on", off: "off" })
+      },
+      command: {
+        name: `shellies/${topic}/relay/${relay}/command`,
+        type: types.option({ on: "on", off: "off" })
+      },
+      defaultValue: "off"
+    },
+    [`${name}_online`]: {
+      state: {
+        name: `shellies/${topic}/online`,
+        type: types.option({true: "on", false: "off"})
+      },
+      defaultValue: "off"
+    }
+  }),
+  iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
+    (state: State): Color => {
+      if (state[`${name}_online`] === "off") {
+        return hex("#888888");
+      } else if (state[name] === "on") {
+        return onCol;
+      }
+      return hex("#000000");
+    }
+};
+
+// FIXME: sinnvolle definition für den status (json) und das set (auch json)
+export const shellyRGBW = {
+  topics: (name: string, topic: string): Topics => ({
+    [name]: {
+      state : {
+        name: `shellies/${topic}/color/0/set`
+      }
+    }
+  })
+}
+
 export const floalt = {
   color: (lightId: string): string => `floalt_${lightId}_color`,
   brightness: (lightId: string): string => `floalt_${lightId}_brightness`,
