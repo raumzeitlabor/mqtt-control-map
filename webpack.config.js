@@ -37,7 +37,7 @@ module.exports = env => ({
       // TODO: CSS follow imports and minify + sourcemap on production
       { test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
       { test: /\.(woff2?|eot|ttf|svg|png)$/, use: [ { loader: "file-loader", options: { esModule: false } } ] },
-      { test: /\.js(x)?$/, use: ["babel-loader?cacheDirectory=true"] }
+      { test: /\.js(x)?$/, use: ["babel-loader?cacheDirectory"] }
     ]
   },
   plugins: [
