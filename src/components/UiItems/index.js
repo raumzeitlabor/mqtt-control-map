@@ -4,6 +4,8 @@ import DropDown from "./DropDown";
 import Section from "./Section";
 import Link from "./Link";
 import Slider from "./Slider";
+import ColorPicker from "./ColorPicker";
+import ColorPickerAlpha from "./ColorPickerAlpha";
 import Text from "./Text";
 import Progress from "./Progress";
 import * as React from "react";
@@ -26,6 +28,12 @@ const Control = ({item}: {item: ControlUI}): React.Node => {
   }
   case "slider": {
     return Slider.component(item);
+  }
+  case "colorpicker": {
+    return ColorPicker.component(item);
+  }
+  case "colorpickerAlpha": {
+    return ColorPickerAlpha.component(item);
   }
   case "text": {
     return Text.component(item);

@@ -8,7 +8,7 @@ import type { UISlider } from "config/flowtypes";
 import SliderComponent from "@mui/material/Slider";
 
 const changeSliderValue = (item: UISlider, changeState) => (_e, v) =>
-  changeState(item, v.toString());
+  changeState(item, item.valueprefix?item.valueprefix+v.toString():v.toString());
 
 const BaseComponent = ({Icon, Label}, item, state, changeState) => (
   <React.Fragment>

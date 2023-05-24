@@ -3,7 +3,7 @@ import type { Config } from "config/flowtypes";
 import * as types from "config/types";
 import { hex, rainbow } from "config/colors";
 import { svg, withState } from "config/icon";
-import { esper, tasmota, shelly } from "./utils";
+import { wled, tasmota, shelly, shellyRGBW } from "./utils";
 import * as icons from "@mdi/js";
 
 import * as onkyo from "./onkyo";
@@ -12,7 +12,8 @@ const config: Config = {
   space: {
     name: "RZL",
     color: "blue",
-    mqtt: "ws://mqtt.rzl.so:1884"
+    mqtt: "ws://10.10.10.209:1884" //DEBUG at home 
+//    mqtt: "ws://mqtt.rzl.so:1884"
   },
   collapseLayers:false,
   topics: [{
@@ -123,6 +124,9 @@ const config: Config = {
         defaultValue: "off"
       },
     },
+/************ Lichter (WLEDs) ************/
+    wled.topics("infinitymirror","infinitymirror"),
+    wled.topics("loungeBacklight","loungeBacklight"),
 /************ Steckdosen (Sonoffs mit Tasmota) ************/
     tasmota.topics("1", "Boiler"),
     tasmota.topics("2", "printerAnnette"),
@@ -134,6 +138,9 @@ const config: Config = {
     tasmota.topics("13", "TischBeamer"),
     tasmota.topics("14", "E-EckeNetworkSwitch"),
     tasmota.topics("16", "Hauptraum_AV"),
+/************ Lichter (RGBW shellies) ************/
+    shellyRGBW.topics("LoungeL", "Lounge_RGBW_links"),
+    shellyRGBW.topics("LoungeR", "Lounge_RGBW_rechts"),
 /************ Lichter (Shellies) ************/
     shelly.topics("E-Ecke_licht", "E-Ecke_licht", "0"),
     shelly.topics("Flurlicht_vorne", "Flurlicht_vorne", "0"),
@@ -148,10 +155,9 @@ const config: Config = {
     shelly.topics("hauptraum_putz_beam", "Hauptraum_lichter", "1"),
     shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"), //replace by RGBW soon
     shelly.topics("Speaker_light", "Speaker_light", "0"),
-/************ Lichter (RGBW shellies) ************/
-    
+
 /************ Onkyos ************/
-    onkyo.topics,
+//    onkyo.topics,
   ],
 
 /********************************************/
@@ -169,7 +175,7 @@ const config: Config = {
         bottomRight: [1030, 718]
       },
       controls: {
-        ...onkyo.controls,
+//        ...onkyo.controls,
         cashdesk: {
           name: "Cashdesk",
           position: [645, 580],
@@ -314,6 +320,110 @@ const config: Config = {
             }
           ]
         },
+        boiler: {
+          name: "Boiler",
+          position: [1005, 650],
+          icon: svg(icons.mdiWaterBoiler).color(tasmota.iconColor("Boiler")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Wasserboiler",
+              topic: "Boiler",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        TelekomSign: {
+          name: "TelekomSign",
+          position: [1005, 30],
+          icon: svg(icons.mdiAlphaTBoxOutline).color(tasmota.iconColor("TelekomSign")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Telekomschild",
+              topic: "TelekomSign",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        Textilpresse: {
+          name: "Textilpresse",
+          position: [645, 250],
+          icon: svg(icons.mdiHeatWave).color(tasmota.iconColor("Textilpresse")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Textilpresse",
+              topic: "Textilpresse",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        TischMitte: {
+          name: "TischMitte",
+          position: [110, 280],
+          icon: svg(icons.mdiPowerSocketDe).color(tasmota.iconColor("TischMitte")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Strom + Netzwerk",
+              topic: "TischMitte",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        TischWhiteboard: {
+          name: "TischWhiteboard",
+          position: [110, 100],
+          icon: svg(icons.mdiPowerSocketDe).color(tasmota.iconColor("TischWhiteboard")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Strom + Netzwerk",
+              topic: "TischWhiteboard",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        TischBeamer: {
+          name: "TischBeamer",
+          position: [110,580],
+          icon: svg(icons.mdiPowerSocketDe).color(tasmota.iconColor("TischBeamer")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Strom + Netzwerk",
+              topic: "TischBeamer",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        E_EckeNetworkSwitch: {
+          name: "E-EckeNetworkSwitch",
+          position: [386, 22],
+          icon: svg(icons.mdiLan).color(tasmota.iconColor("E-EckeNetworkSwitch")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Netzwerkswitch",
+              topic: "E-EckeNetworkSwitch",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
+        Hauptraum_AV: {
+          name: "Hauptraum_AV",
+          position: [337, 465],
+          icon: svg(icons.mdiMultimedia).color(tasmota.iconColor("Hauptraum_AV")),
+          ui: [
+            {
+              type: "toggle",
+              text: "A/V Setup",
+              topic: "Hauptraum_AV",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
       },
     },
     {
@@ -380,12 +490,16 @@ const config: Config = {
           }, {
             type: "section",
             text: "Lampe links"
-          },
-          {
-            type: "section",
-            text: "Lampe rechts"
-          },
-        ]
+          }].concat(
+          shellyRGBW.controls("LoungeL")
+          ).concat(
+            [{
+              type: "section",
+              text: "Lampe rechts"
+            }]
+          ).concat(
+            shellyRGBW.controls("LoungeR")
+          )
         },
         E_Ecke_licht: {
           name: "E-Ecke Beleuchtung",
@@ -480,7 +594,29 @@ const config: Config = {
             text: "Lampe rechts"
           },
         ]
-        }
+        },
+        infinitymirror: {
+          name: "WLED infinitymirror",
+          position: [623, 255],
+          /* eslint-disable camelcase */
+          icon: svg(icons.mdiWhiteBalanceIridescent).color(
+            wled.iconColor("infinitymirror")),
+            /* eslint-enable camelcase */
+          ui: (
+            wled.controls("infinitymirror","http://10.5.0.13/")
+          )
+        },
+        lounge_backlight: {
+          name: "WLED lounge Backlight",
+          position: [623, 605],
+          /* eslint-disable camelcase */
+          icon: svg(icons.mdiWhiteBalanceIridescent).color(
+            wled.iconColor("loungeBacklight")),
+            /* eslint-enable camelcase */
+          ui: (
+            wled.controls("loungeBacklight","http://10.5.0.37")
+          )
+        },
       }
     },
     {

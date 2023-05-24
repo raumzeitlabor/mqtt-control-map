@@ -3,12 +3,8 @@ import React from "react";
 import { MapContainer, ImageOverlay, Marker, LayersControl, LayerGroup } from "react-leaflet";
 import { CRS, point, divIcon } from "leaflet";
 import map from "lodash/map";
-import filter from "lodash/filter";
-import reduce from "lodash/reduce";
 import MqttContext from "mqtt/context";
-import type {
-  Controls, Control, UIControl, ControlUI, Layer
-} from "config/flowtypes";
+import type {Control, Layer} from "config/flowtypes";
 import { renderToString } from "react-dom/server";
 
 export type Point = [number, number];
@@ -73,18 +69,6 @@ const safeIncludes = (o: {+type?: string, +text?: string, +topic?: string},
   }
   return false;
 };
-
-const isVisible = (props: ControlMapProps) =>
-  (c: UIControl & {ui?: Array<ControlUI>}) => {
-    if (safeIncludes(c, props.search.toLowerCase())) {
-      return true;
-    }
-    if (c.ui != null) {
-      return reduce(c.ui,
-        (b, e) => b || safeIncludes(e, props.search.toLowerCase()), false);
-    }
-    return false;
-  };
 
 const renderMarkers = (props: ControlMapProps, layer: Layer) =>
   map(layer.controls, renderMarker(props));

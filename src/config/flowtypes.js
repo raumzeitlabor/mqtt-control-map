@@ -56,12 +56,29 @@ export type UISlider = $ReadOnly<{|
   type: "slider",
   text: string,
   topic: string,
+  valueprefix?: string,
   icon?: Icon,
   enableCondition?: (s: State) => boolean,
   marks?: boolean | Array<{ value: number, label: string}>,
   min?: number,
   max?: number,
   step?: ?number
+|}>;
+
+export type UIColorPicker = $ReadOnly<{|
+  type: "colorpicker",
+  text: string,
+  topic: string,
+  icon?: Icon,
+  enableCondition?: (s: State) => boolean
+|}>;
+
+export type UIColorPickerAlpha = $ReadOnly<{|
+  type: "colorpickerAlpha",
+  text: string,
+  topic: string,
+  icon?: Icon,
+  enableCondition?: (s: State) => boolean
 |}>;
 
 export type UISection = $ReadOnly<{|
@@ -97,6 +114,8 @@ export type ControlUI =
     UIToggle
   | UIDropDown
   | UISlider
+  | UIColorPicker
+  | UIColorPickerAlpha
   | UISection
   | UILink
   | UIText

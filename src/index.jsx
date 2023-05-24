@@ -8,7 +8,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client'
 
 import App from "components/App";
 import { createTheme } from "@mui/material/styles";
@@ -35,9 +35,8 @@ const theme = createTheme({
 });
 
 // $FlowFixMe
-const contentElement: Element = document.getElementById("content");
-ReactDOM.render((
+createRoot(document.getElementById("content")).render(
   <ThemeProvider theme={theme}>
     <App config={config} />
   </ThemeProvider>
-), contentElement);
+);

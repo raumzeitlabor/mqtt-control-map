@@ -1,5 +1,5 @@
 // @flow
-import type { ControlUI, Topics } from "config/flowtypes";
+import type { Topics } from "config/flowtypes";
 import { svg } from "config/icon";
 import { hex, type Color } from "config/colors";
 import * as types from "config/types";
@@ -73,13 +73,260 @@ export const shelly = {
 // FIXME: sinnvolle definition für den status (json) und das set (auch json)
 export const shellyRGBW = {
   topics: (name: string, topic: string): Topics => ({
-    [name]: {
+    [`shellyRGBW_${name}`]: {
       state : {
-        name: `shellies/${topic}/color/0/set`
+        name: `shellies/${topic}/color/0`,
+        type: types.option({ on: "on", off: "off" })
+      },
+      command: {
+        name: `shellies/${topic}/color/0/command`,
+        type: types.option({ on: "on", off: "off" })
+      },
+      defaultValue: "off"
+    },
+    [`shellyRGBW_${name}_W`]: {
+      state : {
+        name: `shellies/${topic}/color/0/status`,
+        type: types.json("white")
+      },
+      command: {
+        name: `shellies/${topic}/color/0/set`,
+        type: types.json("white")
+      },
+      defaultValue: "0"
+    },
+    [`shellyRGBW_${name}_fx`]: {
+      state : {
+        name: `shellies/${topic}/color/0/status`,
+        type: types.json("effect")
+      },
+      command: {
+        name: `shellies/${topic}/color/0/set`,
+        type: types.json("effect")
+      },
+      defaultValue: 0
+    },
+    [`shellyRGBW_${name}_color`]: {
+      state : {
+        name: `shellies/${topic}/color/0/status`,
+        type: (msg) => {
+          const json = JSON.parse(msg.toString());
+          if (!json) {
+            return "#000000";
+          }
+          const red = json.red.toString(16).padStart(2, "0");
+          const green = json.green.toString(16).padStart(2, "0");
+          const blue = json.blue.toString(16).padStart(2, "0");
+          return "#"+red+green+blue;
+        }
+      },
+      command: {
+        name: `shellies/${topic}/color/0/set`,
+        type: (msg) => {
+          const cleanedHexString = msg.toString().substring(1);
+          const red = parseInt(cleanedHexString.substring(0,2), 16);
+          const green = parseInt(cleanedHexString.substring(2,4), 16);
+          const blue = parseInt(cleanedHexString.substring(4,6), 16);
+          const colorObject = {
+            red : red,
+            green : green,
+            blue : blue,
+          };
+          return JSON.stringify(colorObject);
+        }
+      },
+      defaultValue: '{"red":0,"green":0,"blue":0}'
+    },
+  }),
+  controls: (name: string, webpage: string): Array<ControlUI> => (
+   [
+    {
+      type: "toggle",
+      text: "Ein/Ausschalten",
+      icon: svg(icons.mdiPower),
+      topic: `shellyRGBW_${name}`
+    },
+    {
+      type: "colorpicker",
+      text: "RGB",
+      topic: `shellyRGBW_${name}_color`,
+      icon: svg(icons.mdiPalette),
+    },
+    {
+      type: "slider",
+      min: 0,
+      max: 255,
+      text: "W",
+      icon: svg(icons.mdiBrightness7),
+      topic: `shellyRGBW_${name}_W`
+    },
+    {
+      type: "dropDown",
+      text: "Effekt",
+      topic: `shellyRGBW_${name}_fx`,
+      options: {
+        0 : "Solid Color",
+        1 : "Meteor Shower",
+        2 : "Color fade",
+        3 : "Flash",
+        4 : "Breath",
+        5 : "ON/OFF Gradual",
+        6 : "Red/Green Change"
+      },
+      icon: svg(icons.mdiCog)
+    },
+  ]),
+  iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
+    (state: State): Color => {
+      if (state[`wled_${name}_brightness`] !== "0") {
+        return onCol;
       }
+      return hex("#000000");
     }
-  })
-}
+};
+
+export const wled = {
+  topics: (name: string, topic: string): Topics => ({
+    [`wled_${name}_brightness`]: {
+      state: {
+        name: `wled/${topic}/g`,
+        type: types.string
+      },
+      command: {
+        name: `wled/${topic}`,
+        type: types.string
+      },
+      defaultValue: "0"
+    },
+    [`wled_${name}_api_fx`]: {
+      state: {
+        name: `wled/${topic}/v`,
+        type: (msg) => {
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(msg.toString(), 'text/xml');
+          return "FX="+ xml.getElementsByTagName("fx")[0].innerHTML;
+        }
+      },
+      command: {
+        name: `wled/${topic}/api`,
+        type: types.string
+      },
+      defaultValue: "FX=0"
+    },
+    [`wled_${name}_api_speed`]: {
+      state: {
+        name: `wled/${topic}/v`,
+        type: (msg) => {
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(msg.toString(), 'text/xml');
+          return xml.getElementsByTagName("sx")[0].innerHTML;
+        }
+      },
+      command: {
+        name: `wled/${topic}/api`,
+        type: types.string
+      },
+      defaultValue: "0"
+    },
+    [`wled_${name}_api_intens`]: {
+      state: {
+        name: `wled/${topic}/v`,
+        type: (msg) => {
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(msg.toString(), 'text/xml');
+          return xml.getElementsByTagName("ix")[0].innerHTML;
+        }
+      },
+      command: {
+        name: `wled/${topic}/api`,
+        type: types.string
+      },
+      defaultValue: "0"
+    },
+    [`wled_${name}_color`]: {
+      state: {
+        name: `wled/${topic}/c`,
+        type: types.string
+      },
+      command: {
+        name: `wled/${topic}/col`,
+        type: types.string
+      },
+      defaultValue: "#000000"
+    },
+  }),
+  controls: (name: string, webpage: string): Array<ControlUI> => (
+    [{
+      type: "toggle",
+      topic: `wled_${name}_brightness`,
+      text: "Ein/Ausschalten",
+      icon: svg(icons.mdiPower),
+      on: "255",
+      off: "0",
+      toggled: (n) => parseInt(n, 10) > 0
+    },
+    {
+      type: "slider",
+      min: 1,
+      max: 255,
+      text: "Helligkeit",
+      icon: svg(icons.mdiBrightness7),
+      topic: `wled_${name}_brightness`
+    },
+    {
+      type: "dropDown",
+      text: "Effekt",
+      topic: `wled_${name}_api_fx`,
+      options: {
+        "FX=0": "Solid Color",
+        "FX=5": "Random colors",
+        "FX=8": "Colorloop",
+        "FX=9": "Rainbow",
+        "FX=4": "Wipe Random",
+        "FX=66": "Fire 2012",
+        "FX=63": "Pride 2015",
+      },
+      icon: svg(icons.mdiCog)
+    },
+    {
+      type: "colorpicker",
+      text: "Farbe",
+      topic: `wled_${name}_color`,
+      icon: svg(icons.mdiPalette),
+    },
+    {
+      type: "slider",
+      min: 1,
+      max: 255,
+      text: "FX Speed",
+      icon: svg(icons.mdiSnail),
+      topic: `wled_${name}_api_speed`,
+      valueprefix: "SX="
+    },
+    {
+      type: "slider",
+      min: 1,
+      max: 255,
+      text: "FX Intensity",
+      icon: svg(icons.mdiFire),
+      topic: `wled_${name}_api_intens`,
+      valueprefix: "IX="
+    },
+    {
+      type: "link",
+      link: `${webpage}`,
+      text: "Open Webinterface",
+      icon: svg(icons.mdiOpenInNew)
+    }]
+  ),
+  iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
+    (state: State): Color => {
+      if (state[`wled_${name}_brightness`] !== "0") {
+        return onCol;
+      }
+      return hex("#000000");
+    }
+};
 
 export const floalt = {
   color: (lightId: string): string => `floalt_${lightId}_color`,
