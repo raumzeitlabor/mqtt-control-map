@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import createComponent from "./base";
 import { isDisabled, getValue } from "./utils";

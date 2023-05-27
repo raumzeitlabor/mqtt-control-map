@@ -21,6 +21,9 @@ body .leaflet-div-icon {
   width: auto;
   height: auto;
 }
+#drawer_uiComponents .react-colorful {
+  height: 100px;
+}
 .mdi:before {
   background-clip: text;
   -webkit-background-clip: text;

@@ -70,7 +70,6 @@ export const shelly = {
     }
 };
 
-// FIXME: sinnvolle definition für den status (json) und das set (auch json)
 export const shellyRGBW = {
   topics: (name: string, topic: string): Topics => ({
     [`shellyRGBW_${name}`]: {
@@ -165,9 +164,9 @@ export const shellyRGBW = {
       text: "Effekt",
       topic: `shellyRGBW_${name}_fx`,
       options: {
-        0 : "Solid Color",
-        1 : "Meteor Shower",
-        2 : "Color fade",
+        0 : "Solid Color (no fx)",
+        1 : "fast color change",
+        2 : "slow Color fade",
         3 : "Flash",
         4 : "Breath",
         5 : "ON/OFF Gradual",
@@ -321,7 +320,7 @@ export const wled = {
   ),
   iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
     (state: State): Color => {
-      if (state[`wled_${name}_brightness`] !== "0") {
+      if (state[`wled_${name}_brightness`] != "0") {
         return onCol;
       }
       return hex("#000000");

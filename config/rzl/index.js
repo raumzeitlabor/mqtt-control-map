@@ -12,8 +12,8 @@ const config: Config = {
   space: {
     name: "RZL",
     color: "blue",
-    mqtt: "ws://10.10.10.209:1884" //DEBUG at home 
-//    mqtt: "ws://mqtt.rzl.so:1884"
+//    mqtt: "ws://10.10.10.209:1884" //DEBUG at home 
+    mqtt: "ws://mqtt.rzl.so:1884"
   },
   collapseLayers:false,
   topics: [{
@@ -141,6 +141,12 @@ const config: Config = {
 /************ Lichter (RGBW shellies) ************/
     shellyRGBW.topics("LoungeL", "Lounge_RGBW_links"),
     shellyRGBW.topics("LoungeR", "Lounge_RGBW_rechts"),
+    shellyRGBW.topics("HauptB", "Haupt_RGBW_beamer"),
+    shellyRGBW.topics("HauptM", "Haupt_RGBW_mitte"),
+    shellyRGBW.topics("HauptW", "Haupt_RGBW_whiteboard"),
+    shellyRGBW.topics("WorkF", "Workshop_RGBW_folienlager"),
+    shellyRGBW.topics("WorkM", "Workshop_RGBW_mitte"),
+    shellyRGBW.topics("WorkB", "Workshop_RGBW_beamer"),
 /************ Lichter (Shellies) ************/
     shelly.topics("E-Ecke_licht", "E-Ecke_licht", "0"),
     shelly.topics("Flurlicht_vorne", "Flurlicht_vorne", "0"),
@@ -155,9 +161,11 @@ const config: Config = {
     shelly.topics("hauptraum_putz_beam", "Hauptraum_lichter", "1"),
     shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"), //replace by RGBW soon
     shelly.topics("Speaker_light", "Speaker_light", "0"),
-
 /************ Onkyos ************/
-//    onkyo.topics,
+//    onkyo.topics("Onkyo_Hauptraum", "Onkyo_Hauptraum"),
+//    onkyo.topics("Onkyo_Workshop", "Onkyo_Workshop"),
+//    onkyo.topics("Onkyo_Kueche", "Onkyo_Kueche"),
+//    onkyo.topics("Onkyo_Lounge", "Onkyo_Lounge"),
   ],
 
 /********************************************/
@@ -175,7 +183,10 @@ const config: Config = {
         bottomRight: [1030, 718]
       },
       controls: {
-//        ...onkyo.controls,
+//      onkyo.controls("Onkyo_Hauptraum", "http://10.5.0.1"),
+//      onkyo.controls("Onkyo_Workshop", "http://10.5.0.1"),
+//      onkyo.controls("Onkyo_Kueche", "http://10.5.0.1"),
+//      onkyo.controls("Onkyo_Lounge", "http://10.5.0.1"),
         cashdesk: {
           name: "Cashdesk",
           position: [645, 580],
@@ -424,6 +435,19 @@ const config: Config = {
             }
           ]
         },
+        SpeakerLicht: {
+          name: "Speaker Licht",
+          position: [250, 650],
+          icon: svg(icons.mdiHeadLightbulb).color(shelly.iconColor("Speaker_light")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Speakerlicht",
+              topic: "Speaker_light",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
       },
     },
     {
@@ -551,16 +575,24 @@ const config: Config = {
             icon: svg(icons.mdiPower)
           }, {
             type: "section",
-            text: "Lampe links"
-          }, {
-            type: "section",
-            text: "Lampe Mitte"
-          },
-          {
-            type: "section",
-            text: "Lampe rechts"
-          },
-        ]
+            text: "Lampe Folienlager"
+          }].concat(
+            shellyRGBW.controls("WorkF")
+            ).concat(
+              [{
+                type: "section",
+                text: "Lampe Mitte"
+              }]
+            ).concat(
+              shellyRGBW.controls("WorkM")
+            ).concat(
+              [{
+                type: "section",
+                text: "Lampe Beamer"
+              }]
+            ).concat(
+              shellyRGBW.controls("WorkB")
+            )
         },
         Hauptraum: {
           name: "Hauptraum Beleuchtung",
@@ -584,16 +616,24 @@ const config: Config = {
             icon: svg(icons.mdiPower)
           }, {
             type: "section",
-            text: "Lampe links"
-          }, {
-            type: "section",
-            text: "Lampe Mitte"
-          },
-          {
-            type: "section",
-            text: "Lampe rechts"
-          },
-        ]
+            text: "Lampe Beamer"
+          }].concat(
+            shellyRGBW.controls("HauptB")
+            ).concat(
+              [{
+                type: "section",
+                text: "Lampe Mitte"
+              }]
+            ).concat(
+              shellyRGBW.controls("HauptM")
+            ).concat(
+              [{
+                type: "section",
+                text: "Lampe Whiteboard"
+              }]
+            ).concat(
+              shellyRGBW.controls("HauptW")
+            )
         },
         infinitymirror: {
           name: "WLED infinitymirror",
