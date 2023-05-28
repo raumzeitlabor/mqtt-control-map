@@ -21,7 +21,7 @@ const BaseComponent = ({ Icon, Label }, item, state, changeState) => {
         onChange={changeColorValue(item, changeState)}
         disabled={isDisabled(item, state)}
         valueLabelDisplay="auto"
-        style={{ marginLeft: 40 }}
+        style={isDisabled(item, state)?{marginLeft: 40,filter: 'grayscale(100%)'}:{marginLeft: 40}}
       />
     </React.Fragment>
   );

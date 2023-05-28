@@ -1,15 +1,17 @@
 // @flow
 import type { Topics } from "config/flowtypes";
 import { svg } from "config/icon";
-import { hex, type color } from "config/colors";
+import { hex, type Color } from "config/colors";
 import * as types from "config/types";
 import * as icons from "@mdi/js";
+
+import type { ControlUI } from "config/flowtypes";
 
 export const onkyo = {
   topics: (name: string, topic: string): Topics => ({
     [`${name}_connect`]: {
       state: {
-        name: `/service/${topic}/connected`,
+        name: `${topic}/connected`,
         type: types.option({
           "0": "disconnected",
           "1": "connecting",
@@ -20,71 +22,57 @@ export const onkyo = {
     },
     [`${name}_power`]: {
       state: {
-        name: `/service/${topic}/status/system-power`,
+        name: `${topic}/status/system-power`,
         type: types.json("onkyo_raw", types.option({
           PWR00: "off",
           PWR01: "on"
         }))
       },
       command: {
-        name: `/service/${topic}/command`,
+        name: `${topic}/command`,
         type: types.option({ off: "PWR00", on: "PWR01" })
       },
       defaultValue: "off"
     },
     [`${name}_mute`]: {
       state: {
-        name: `/service/${topic}/status/audio-muting`,
+        name: `${topic}/status/audio-muting`,
         type: types.json("onkyo_raw", types.option({
           AMT00: "off",
           AMT01: "on"
         }))
       },
       command: {
-        name: `/service/${topic}/command`,
+        name: `${topic}/command`,
         type: types.option({ off: "AMT00", on: "AMT01" })
       },
       defaultValue: "off"
     },
     [`${name}_volume`]: {
       state: {
-        name: `/service/${topic}/status/volume`,
+        name: `${topic}/status/volume`,
         type: types.json("val")
       },
       command: {
-        name: `/service/${topic}/set/volume`,
+        name: `${topic}/set/volume`,
         type: types.string
       },
       defaultValue: "0"
     },
     [`${name}_inputs`]: {
       state: {
-        name: `/service/${topic}/status/input-selector`,
-        type: types.json("onkyo_raw", types.option({
-          SLI11: "tisch",
-          SLI01: "chromecast",
-          SLI10: "pult",
-          SLI2B: "netzwerk",
-          SLI03: "front",
-          otherwise: "unknown"
-        }))
+        name: `${topic}/status/input-selector`,
+        type: types.json("onkyo_raw")
       },
       command: {
-        name: `/service/${topic}/command`,
-        type: types.option({
-          tisch: "SLI11",
-          chromecast: "SLI01",
-          pult: "SLI10",
-          netzwerk: "SLI2B",
-          front: "SLI03",
-          unknown: "SLI00"
-        })
+        name: `${topic}/command`,
+        type: types.string
       },
       defaultValue: "unknown"
     },
     [`${name}_radios`]: {
       state: {
-        name: `/service/${topic}/status/latest-NPR`,
+        name: `${topic}/status/latest-NPR`,
         type: types.option({
           NPR01: "mpd",
           NPR02: "kohina",
@@ -104,7 +92,7 @@ export const onkyo = {
         })
       },
       command: {
-        name: `/service/${topic}/command`,
+        name: `${topic}/command`,
         type: types.option({
           mpd: "NPR01",
           kohina: "NPR02",
@@ -160,6 +148,7 @@ export const onkyo = {
         text: "Eingänge"
       },
       {
+        //FIXME: I think this needs to be instanced manually for each onkyo to make sense
         type: "dropDown",
         text: "Eingang",
         topic: `${name}_inputs`,
@@ -204,7 +193,7 @@ export const onkyo = {
       },
       {
         type: "link",
-        link: "http://mpd.rzl/mpd/player/index.php",
+        link: "http://mpd.rzl.so/mpd/player/index.php",
         text: "Open MPD Interface",
         icon: svg(icons.mdiOpenInNew)
       },
@@ -218,7 +207,9 @@ export const onkyo = {
   ),
   iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
   (state: State): Color => {
-    if (state[`${name}_power`] != "0") {
+    if (state[`${name}_connect`] !== "connected") {
+      return hex("#888888");
+    } else if (state[`${name}_power`] === "on") {
       return onCol;
     }
     return hex("#000000");

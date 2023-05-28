@@ -4,9 +4,9 @@ import * as types from "config/types";
 import { hex, rainbow } from "config/colors";
 import { svg, withState } from "config/icon";
 import { wled, tasmota, shelly, shellyRGBW } from "./utils";
+import {onkyo} from "./onkyo";
 import * as icons from "@mdi/js";
 
-import * as onkyo from "./onkyo";
 
 const config: Config = {
   space: {
@@ -162,10 +162,10 @@ const config: Config = {
     shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"), //replace by RGBW soon
     shelly.topics("Speaker_light", "Speaker_light", "0"),
 /************ Onkyos ************/
-//    onkyo.topics("Onkyo_Hauptraum", "Onkyo_Hauptraum"),
-//    onkyo.topics("Onkyo_Workshop", "Onkyo_Workshop"),
-//    onkyo.topics("Onkyo_Kueche", "Onkyo_Kueche"),
-//    onkyo.topics("Onkyo_Lounge", "Onkyo_Lounge"),
+    onkyo.topics("Onkyo_Hauptraum", "Onkyo_Hauptraum"),
+    onkyo.topics("Onkyo_Workshop", "Onkyo_Workshop"),
+    onkyo.topics("Onkyo_Kueche", "Onkyo_Kueche"),
+    onkyo.topics("Onkyo_Lounge", "Onkyo_Lounge"),
   ],
 
 /********************************************/
@@ -183,10 +183,6 @@ const config: Config = {
         bottomRight: [1030, 718]
       },
       controls: {
-//      onkyo.controls("Onkyo_Hauptraum", "http://10.5.0.1"),
-//      onkyo.controls("Onkyo_Workshop", "http://10.5.0.1"),
-//      onkyo.controls("Onkyo_Kueche", "http://10.5.0.1"),
-//      onkyo.controls("Onkyo_Lounge", "http://10.5.0.1"),
         cashdesk: {
           name: "Cashdesk",
           position: [645, 580],
@@ -435,6 +431,30 @@ const config: Config = {
             }
           ]
         },
+        Onkyo_Hauptraum: {
+          name: "Onkyo Hauptraum",
+          position: [300,465],
+          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Hauptraum")),
+          ui: onkyo.controls("Onkyo_Hauptraum", "http://172.22.36.123")
+        },
+        Onkyo_Workshop: {
+          name: "Onkyo Workshopraum",
+          position: [650,30],
+          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Workshop")),
+          ui: onkyo.controls("Onkyo_Workshop", "http://172.22.36.123")
+        },
+        Onkyo_Kueche: {
+          name: "Onkyo Küche",
+          position: [645,500],
+          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Kueche")),
+          ui: onkyo.controls("Onkyo_Kueche", "http://172.22.36.123")
+        },
+        Onkyo_Lounge: {
+          name: "Onkyo Retrolounge",
+          position: [600,570],
+          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Lounge")),
+          ui: onkyo.controls("Onkyo_Lounge", "http://172.22.36.123")
+        },
         SpeakerLicht: {
           name: "Speaker Licht",
           position: [250, 650],
@@ -499,7 +519,8 @@ const config: Config = {
         Lounge_lichter: {
           name: "Lounge Beleuchtung",
           position: [500, 605],
-          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Lounge_putzlicht")),
+          icon: svg(icons.mdiLightbulbOn).color(({Lounge_buntlicht, Lounge_putzlicht}) =>
+          (Lounge_buntlicht === "on" ? hex("#00FF00") : (Lounge_putzlicht === "on" ? hex("#00FF00") : shelly.iconColor("Lounge_buntlicht")))),
           ui: [
           {
             type: "toggle",
@@ -561,7 +582,8 @@ const config: Config = {
         Workshop: {
           name: "Workshop Beleuchtung",
           position: [800, 165],
-          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Workshop_putzlicht")),
+          icon: svg(icons.mdiLightbulbOn).color(({Workshop_buntlicht, Workshop_putzlicht}) =>
+          (Workshop_buntlicht === "on" ? hex("#00FF00") : (Workshop_putzlicht === "on" ? hex("#00FF00") : shelly.iconColor("Workshop_buntlicht")))),
           ui: [
           {
             type: "toggle",

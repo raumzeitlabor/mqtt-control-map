@@ -5,6 +5,10 @@ import { hex, type Color } from "config/colors";
 import * as types from "config/types";
 import * as icons from "@mdi/js";
 
+import type { ControlUI } from "config/flowtypes";
+
+/************ Tasmota ************/
+
 export const tasmota = {
   topics: (id: string, name: string): Topics => ({
     [name]: {
@@ -38,30 +42,32 @@ export const tasmota = {
     }
 };
 
+/************ Shelly ************/
+
 export const shelly = {
   topics: (name: string, topic: string, relay: string): Topics => ({
     [name]: {
       state: {
         name: `shellies/${topic}/relay/${relay}`,
-        type: types.option({ on: "on", off: "off" })
+        type: types.option({ "on": "on", "off": "off" })
       },
       command: {
         name: `shellies/${topic}/relay/${relay}/command`,
-        type: types.option({ on: "on", off: "off" })
+        type: types.option({ "on": "on", "off": "off" })
       },
       defaultValue: "off"
     },
     [`${name}_online`]: {
       state: {
         name: `shellies/${topic}/online`,
-        type: types.option({true: "on", false: "off"})
+        type: types.option({"on": "true", "off": "false"})
       },
       defaultValue: "off"
     }
   }),
   iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
     (state: State): Color => {
-      if (state[`${name}_online`] === "off") {
+      if (state[`${name}_online`] !== "true") {
         return hex("#888888");
       } else if (state[name] === "on") {
         return onCol;
@@ -70,8 +76,16 @@ export const shelly = {
     }
 };
 
+/************ Shelly RGBW 2 ************/
+
 export const shellyRGBW = {
   topics: (name: string, topic: string): Topics => ({
+    [`shellyRGBW_${name}_status`]: {
+      state : {
+        name: `shellies/${topic}/online`,
+        type: types.string
+      },
+    },
     [`shellyRGBW_${name}`]: {
       state : {
         name: `shellies/${topic}/color/0`,
@@ -137,19 +151,21 @@ export const shellyRGBW = {
       defaultValue: '{"red":0,"green":0,"blue":0}'
     },
   }),
-  controls: (name: string, webpage: string): Array<ControlUI> => (
+  controls: (name: string): Array<ControlUI> => (
    [
     {
       type: "toggle",
       text: "Ein/Ausschalten",
       icon: svg(icons.mdiPower),
-      topic: `shellyRGBW_${name}`
+      topic: `shellyRGBW_${name}`,
+      enableCondition: (state) => state[`shellyRGBW_${name}_status`] === "true"
     },
     {
       type: "colorpicker",
       text: "RGB",
       topic: `shellyRGBW_${name}_color`,
       icon: svg(icons.mdiPalette),
+      enableCondition: (state) => state[`shellyRGBW_${name}_status`] === "true"
     },
     {
       type: "slider",
@@ -157,35 +173,47 @@ export const shellyRGBW = {
       max: 255,
       text: "W",
       icon: svg(icons.mdiBrightness7),
-      topic: `shellyRGBW_${name}_W`
+      topic: `shellyRGBW_${name}_W`,
+      enableCondition: (state) => state[`shellyRGBW_${name}_status`] === "true"
     },
     {
       type: "dropDown",
       text: "Effekt",
       topic: `shellyRGBW_${name}_fx`,
       options: {
-        0 : "Solid Color (no fx)",
-        1 : "fast color change",
-        2 : "slow Color fade",
-        3 : "Flash",
-        4 : "Breath",
-        5 : "ON/OFF Gradual",
-        6 : "Red/Green Change"
+        "0" : "Solid Color (no fx)",
+        "1" : "fast color change",
+        "2" : "slow Color fade",
+        "3" : "Flash",
+        "4" : "Breath",
+        "5" : "ON/OFF Gradual",
+        "6" : "Red/Green Change"
       },
-      icon: svg(icons.mdiCog)
+      icon: svg(icons.mdiCog),
+      enableCondition: (state) => state[`shellyRGBW_${name}_status`] === "true"
     },
   ]),
   iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
     (state: State): Color => {
-      if (state[`wled_${name}_brightness`] !== "0") {
+      if (state[`shellyRGBW_${name}_status`] !== "online") {
+        return hex("#888888");
+      } else if (state[`shellyRGBW_${name}`] == "on") {
         return onCol;
       }
       return hex("#000000");
     }
 };
 
+/************ WLED ************/
+
 export const wled = {
   topics: (name: string, topic: string): Topics => ({
+    [`wled_${name}_status`]: {
+      state: {
+        name: `wled/${topic}/status`,
+        type: types.string
+      }
+    },    
     [`wled_${name}_brightness`]: {
       state: {
         name: `wled/${topic}/g`,
@@ -262,7 +290,8 @@ export const wled = {
       icon: svg(icons.mdiPower),
       on: "255",
       off: "0",
-      toggled: (n) => parseInt(n, 10) > 0
+      toggled: (n) => parseInt(n, 10) > 0,
+      enableCondition: (state) => state[`wled_${name}_status`] === "online"
     },
     {
       type: "slider",
@@ -270,7 +299,8 @@ export const wled = {
       max: 255,
       text: "Helligkeit",
       icon: svg(icons.mdiBrightness7),
-      topic: `wled_${name}_brightness`
+      topic: `wled_${name}_brightness`,
+      enableCondition: (state) => state[`wled_${name}_status`] === "online"
     },
     {
       type: "dropDown",
@@ -285,13 +315,15 @@ export const wled = {
         "FX=66": "Fire 2012",
         "FX=63": "Pride 2015",
       },
-      icon: svg(icons.mdiCog)
+      icon: svg(icons.mdiCog),
+      enableCondition: (state) => state[`wled_${name}_status`] === "online"
     },
     {
       type: "colorpicker",
       text: "Farbe",
       topic: `wled_${name}_color`,
       icon: svg(icons.mdiPalette),
+      enableCondition: (state) => state[`wled_${name}_status`] === "online"
     },
     {
       type: "slider",
@@ -300,7 +332,8 @@ export const wled = {
       text: "FX Speed",
       icon: svg(icons.mdiSnail),
       topic: `wled_${name}_api_speed`,
-      valueprefix: "SX="
+      valueprefix: "SX=",
+      enableCondition: (state) => state[`wled_${name}_status`] === "online"
     },
     {
       type: "slider",
@@ -309,7 +342,8 @@ export const wled = {
       text: "FX Intensity",
       icon: svg(icons.mdiFire),
       topic: `wled_${name}_api_intens`,
-      valueprefix: "IX="
+      valueprefix: "IX=",
+      enableCondition: (state) => state[`wled_${name}_status`] === "online"
     },
     {
       type: "link",
@@ -320,12 +354,16 @@ export const wled = {
   ),
   iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
     (state: State): Color => {
-      if (state[`wled_${name}_brightness`] != "0") {
+      if (state[`wled_${name}_status`] !== "online") {
+        return hex("#888888");
+      } else if (state[`wled_${name}_brightness`] != "0") {
         return onCol;
       }
       return hex("#000000");
     }
 };
+
+/************ IKEA Floalt ************/
 
 export const floalt = {
   color: (lightId: string): string => `floalt_${lightId}_color`,
@@ -359,6 +397,8 @@ export const floalt = {
     }
   })
 };
+
+/************ IKEA Tradfri ************/
 
 const tradfriRemote = {
   level: (remoteId: string): string => `tradfri_remote_${remoteId}_level`,
