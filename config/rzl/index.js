@@ -13,7 +13,7 @@ const config: Config = {
     name: "RZL",
     color: "blue",
 //    mqtt: "ws://10.10.10.209:1884" //DEBUG at home 
-    mqtt: "ws://mqtt.rzl.so:1884"
+    mqtt: "ws://mqtt.rzl.so:1885"
   },
   collapseLayers:false,
   topics: [{
@@ -159,7 +159,7 @@ const config: Config = {
     shelly.topics("Workshop_buntlicht", "Workshop_lichter", "1"),
     shelly.topics("Hauptraum_putz_white", "Hauptraum_lichter", "0"),
     shelly.topics("hauptraum_putz_beam", "Hauptraum_lichter", "1"),
-    shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"), //replace by RGBW soon
+    shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"),
     shelly.topics("Speaker_light", "Speaker_light", "0"),
 /************ Onkyos ************/
     onkyo.topics("Onkyo_Hauptraum", "Onkyo_Hauptraum"),
@@ -435,7 +435,7 @@ const config: Config = {
           name: "Onkyo Hauptraum",
           position: [300,465],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Hauptraum")),
-          ui: onkyo.controls("Onkyo_Hauptraum", "http://172.22.36.123")
+          ui: onkyo.controls("Onkyo_Hauptraum", "http://dance-master-5k.labor.rzl.so/")
         },
         Onkyo_Workshop: {
           name: "Onkyo Workshopraum",
@@ -519,8 +519,12 @@ const config: Config = {
         Lounge_lichter: {
           name: "Lounge Beleuchtung",
           position: [500, 605],
-          icon: svg(icons.mdiLightbulbOn).color(({Lounge_buntlicht, Lounge_putzlicht}) =>
-          (Lounge_buntlicht === "on" ? hex("#00FF00") : (Lounge_putzlicht === "on" ? hex("#00FF00") : shelly.iconColor("Lounge_buntlicht")))),
+          icon: svg(icons.mdiLightbulbOn).color(({Lounge_buntlicht, Lounge_putzlicht, LoungeL, LoungeR}) =>
+          (Lounge_buntlicht === "on" ||
+          Lounge_putzlicht === "on" ||
+          LoungeL === "on" ||
+          LoungeR === "on"
+           ? hex("#00FF00") : shelly.iconColor("Lounge_putzlicht"))),
           ui: [
           {
             type: "toggle",
@@ -582,8 +586,13 @@ const config: Config = {
         Workshop: {
           name: "Workshop Beleuchtung",
           position: [800, 165],
-          icon: svg(icons.mdiLightbulbOn).color(({Workshop_buntlicht, Workshop_putzlicht}) =>
-          (Workshop_buntlicht === "on" ? hex("#00FF00") : (Workshop_putzlicht === "on" ? hex("#00FF00") : shelly.iconColor("Workshop_buntlicht")))),
+          icon: svg(icons.mdiLightbulbOn).color(({Workshop_buntlicht, Workshop_putzlicht, WorkF, WorkM, WorkB}) =>
+          (Workshop_buntlicht === "on" ||
+           Workshop_putzlicht === "on" ||
+           WorkF === "on" ||
+           WorkM === "on" ||
+           WorkB === "on"
+           ? hex("#00FF00") : shelly.iconColor("Workshop_putzlicht"))),
           ui: [
           {
             type: "toggle",
@@ -619,7 +628,8 @@ const config: Config = {
         Hauptraum: {
           name: "Hauptraum Beleuchtung",
           position: [190, 405],
-          icon: svg(icons.mdiLightbulbOn).color(shelly.iconColor("Workshop_putzlicht")),
+          icon: svg(icons.mdiLightbulbOn).color(({Hauptraum_buntlicht, Hauptraum_putzlicht}) =>
+          (Hauptraum_buntlicht === "on" ? hex("#00FF00") : (Hauptraum_putzlicht === "on" ? hex("#00FF00") : shelly.iconColor("Hauptraum buntlicht")))),
           ui: [
           {
             type: "toggle",

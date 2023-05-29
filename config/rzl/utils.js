@@ -80,13 +80,7 @@ export const shelly = {
 
 export const shellyRGBW = {
   topics: (name: string, topic: string): Topics => ({
-    [`shellyRGBW_${name}_status`]: {
-      state : {
-        name: `shellies/${topic}/online`,
-        type: types.string
-      },
-    },
-    [`shellyRGBW_${name}`]: {
+    [name]: {
       state : {
         name: `shellies/${topic}/color/0`,
         type: types.option({ on: "on", off: "off" })
@@ -96,6 +90,12 @@ export const shellyRGBW = {
         type: types.option({ on: "on", off: "off" })
       },
       defaultValue: "off"
+    },
+    [`shellyRGBW_${name}_status`]: {
+      state : {
+        name: `shellies/${topic}/online`,
+        type: types.option({"on": "true", "off": "false"})
+      },
     },
     [`shellyRGBW_${name}_W`]: {
       state : {
@@ -157,7 +157,7 @@ export const shellyRGBW = {
       type: "toggle",
       text: "Ein/Ausschalten",
       icon: svg(icons.mdiPower),
-      topic: `shellyRGBW_${name}`,
+      topic: `${name}`,
       enableCondition: (state) => state[`shellyRGBW_${name}_status`] === "true"
     },
     {

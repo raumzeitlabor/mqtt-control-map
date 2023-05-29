@@ -19,7 +19,7 @@ export default function connectMqtt(
   url: string,
   settings: MqttSettings = {}
 ): MessageCallback {
-  const client = mqtt.connect(url);
+  const client = mqtt.connect(url, {rejectUnauthorized: false});
   client.on("connect", () => {
     if (settings.subscribe != null) {
       client.subscribe(uniq(settings.subscribe));

@@ -9,70 +9,79 @@ import type { ControlUI } from "config/flowtypes";
 
 export const onkyo = {
   topics: (name: string, topic: string): Topics => ({
-    [`${name}_connect`]: {
+    [`${name}_mqtt_connect`]: {
       state: {
-        name: `${topic}/connected`,
+        name: `onkyos/${topic}/mqtt_connected`,
         type: types.option({
           "0": "disconnected",
-          "1": "connecting",
-          "2": "connected"
+          "1": "connected"
+        })
+      },
+      defaultValue: "disconnected"
+    },
+    [`${name}_eiscp_connect`]: {
+      state: {
+        name: `onkyos/${topic}/eiscp_connected`,
+        type: types.option({
+          "0": "disconnected",
+          "1": "connected"
         })
       },
       defaultValue: "disconnected"
     },
     [`${name}_power`]: {
       state: {
-        name: `${topic}/status/system-power`,
+        name: `onkyos/${topic}/status/system-power`,
         type: types.json("onkyo_raw", types.option({
           PWR00: "off",
           PWR01: "on"
         }))
       },
       command: {
-        name: `${topic}/command`,
+        name: `onkyos/${topic}/command`,
         type: types.option({ off: "PWR00", on: "PWR01" })
       },
       defaultValue: "off"
     },
     [`${name}_mute`]: {
       state: {
-        name: `${topic}/status/audio-muting`,
+        name: `onkyos/${topic}/status/audio-muting`,
         type: types.json("onkyo_raw", types.option({
           AMT00: "off",
           AMT01: "on"
         }))
       },
       command: {
-        name: `${topic}/command`,
+        name: `onkyos/${topic}/command`,
         type: types.option({ off: "AMT00", on: "AMT01" })
       },
       defaultValue: "off"
     },
     [`${name}_volume`]: {
       state: {
-        name: `${topic}/status/volume`,
+        name: `onkyos/${topic}/status/master-volume`,
         type: types.json("val")
       },
       command: {
-        name: `${topic}/set/volume`,
+        name: `onkyos/${topic}/set/master-volume`,
         type: types.string
       },
       defaultValue: "0"
     },
     [`${name}_inputs`]: {
       state: {
-        name: `${topic}/status/input-selector`,
-        type: types.json("onkyo_raw")
+        name: `onkyos/${topic}/status/input-selector`,
+        type: types.json("val")
       },
       command: {
-        name: `${topic}/command`,
+        name: `onkyos/${topic}/set/input-selector`,
         type: types.string
       },
       defaultValue: "unknown"
     },
     [`${name}_radios`]: {
       state: {
-        name: `${topic}/status/latest-NPR`,
+        name: `onkyos/${topic}/status/latest-NPR`,
         type: types.option({
           NPR01: "mpd",
           NPR02: "kohina",
@@ -92,7 +101,7 @@ export const onkyo = {
         })
       },
       command: {
-        name: `${topic}/command`,
+        name: `onkyos/${topic}/command`,
         type: types.option({
           mpd: "NPR01",
           kohina: "NPR02",
@@ -121,7 +130,7 @@ export const onkyo = {
         text: "Power",
         icon: svg(icons.mdiPower),
         topic: `${name}_power`,
-        enableCondition: (state) => state[`${name}_connect`] === "connected"
+        enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
       },
       {
         type: "section",
@@ -134,14 +143,14 @@ export const onkyo = {
         min: 0,
         max: 50,
         icon: svg(icons.mdiVolumeHigh),
-        enableCondition: (state) => state[`${name}_connect`] === "connected"
+        enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
       },
       {
         type: "toggle",
         text: "Mute",
         topic: `${name}_mute`,
         icon: svg(icons.mdiVolumeOff),
-        enableCondition: (state) => state[`${name}_connect`] === "connected"
+        enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
       },
       {
         type: "section",
@@ -160,7 +169,7 @@ export const onkyo = {
           front: "Front HDMI"
         },
         icon: svg(icons.mdiUsb),
-        enableCondition: (state) => state[`${name}_connect`] === "connected"
+        enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
       },
       {
         type: "dropDown",
@@ -184,7 +193,7 @@ export const onkyo = {
           unknown: "Unknown"
         },
         icon: svg(icons.mdiRadio),
-        enableCondition: (state) => state[`${name}_connect`] === "connected"
+        enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
           && state.onkyoInputs === "netzwerk"
       },
       {
@@ -207,7 +216,7 @@ export const onkyo = {
   ),
   iconColor: (name: string, onCol: Color = hex("#00FF00")): (State => Color) =>
   (state: State): Color => {
-    if (state[`${name}_connect`] !== "connected") {
+    if (state[`${name}_mqtt_connect`] !== "connected" || state[`${name}_eiscp_connect`] !== "connected") {
       return hex("#888888");
     } else if (state[`${name}_power`] === "on") {
       return onCol;
