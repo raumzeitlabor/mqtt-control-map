@@ -144,6 +144,7 @@ export const shellyRGBW = {
             red : red,
             green : green,
             blue : blue,
+            "gain" : 100
           };
           return JSON.stringify(colorObject);
         }
@@ -182,12 +183,9 @@ export const shellyRGBW = {
       topic: `shellyRGBW_${name}_fx`,
       options: {
         "0" : "Solid Color (no fx)",
-        "1" : "fast color change",
-        "2" : "slow Color fade",
+        "1" : "Meteor Shower",
+        "2" : "Gradual Change",
         "3" : "Flash",
-        "4" : "Breath",
-        "5" : "ON/OFF Gradual",
-        "6" : "Red/Green Change"
       },
       icon: svg(icons.mdiCog),
       enableCondition: (state) => state[`shellyRGBW_${name}_status`] === "true"

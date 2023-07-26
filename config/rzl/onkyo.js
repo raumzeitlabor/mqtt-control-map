@@ -32,28 +32,29 @@ export const onkyo = {
     [`${name}_power`]: {
       state: {
         name: `onkyos/${topic}/status/system-power`,
-        type: types.json("onkyo_raw", types.option({
-          PWR00: "off",
-          PWR01: "on"
+        type: types.json("val", types.option({
+          off: "off",
+          on: "on",
+          standby: "standby"
         }))
       },
       command: {
-        name: `onkyos/${topic}/command`,
-        type: types.option({ off: "PWR00", on: "PWR01" })
+        name: `onkyos/${topic}/set/system-power`,
+        type: types.option({ off: "off", on: "on" })
       },
       defaultValue: "off"
     },
     [`${name}_mute`]: {
       state: {
         name: `onkyos/${topic}/status/audio-muting`,
-        type: types.json("onkyo_raw", types.option({
-          AMT00: "off",
-          AMT01: "on"
+        type: types.json("val", types.option({
+          off: "off",
+          on: "on"
         }))
       },
       command: {
-        name: `onkyos/${topic}/command`,
-        type: types.option({ off: "AMT00", on: "AMT01" })
+        name: `onkyos/${topic}/set/audio-muting`,
+        type: types.option({ off: "off", on: "on" })
       },
       defaultValue: "off"
     },
@@ -81,44 +82,12 @@ export const onkyo = {
     },
     [`${name}_radios`]: {
       state: {
-        name: `onkyos/${topic}/status/latest-NPR`,
-        type: types.option({
-          NPR01: "mpd",
-          NPR02: "kohina",
-          NPR03: "somafmDronezone",
-          NPR04: "somafmThetrip",
-          NPR05: "querfunk",
-          NPR06: "somafmDefconradio",
-          NPR07: "somafmSecretagent",
-          NPR08: "somafmLush",
-          NPR09: "somafmBeatblender",
-          NPR0a: "ponyville",
-          NPR0b: "deutschlandradio",
-          NPR0c: "somafmSuburbsOfGoa",
-          NPR0d: "somafmSonicUniverse",
-          NPR0e: "somafmChrismasLounge",
-          otherwise: "unknown"
-        })
+        name: `onkyos/${topic}/status/net-usb-title-name`,
+        type: types.json("val")
       },
       command: {
         name: `onkyos/${topic}/command`,
-        type: types.option({
-          mpd: "NPR01",
-          kohina: "NPR02",
-          somafmDronezone: "NPR03",
-          somafmThetrip: "NPR04",
-          querfunk: "NPR05",
-          somafmDefconradio: "NPR06",
-          somafmSecretagent: "NPR07",
-          somafmLush: "NPR08",
-          somafmBeatblender: "NPR09",
-          ponyville: "NPR0a",
-          deutschlandradio: "NPR0b",
-          somafmSuburbsOfGoa: "NPR0c",
-          somafmSonicUniverse: "NPR0d",
-          somafmChrismasLounge: "NPR0e",
-          otherwise: "NPR00"
-        })
+        type: types.string
       },
       defaultValue: "unknown"
     }
@@ -131,10 +100,6 @@ export const onkyo = {
         icon: svg(icons.mdiPower),
         topic: `${name}_power`,
         enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
-      },
-      {
-        type: "section",
-        text: "Lautstärkeregelung"
       },
       {
         type: "slider",
@@ -154,15 +119,15 @@ export const onkyo = {
       },
       {
         type: "section",
-        text: "Eingänge"
+        text: "Input Sources"
       },
       {
         //FIXME: I think this needs to be instanced manually for each onkyo to make sense
         type: "dropDown",
-        text: "Eingang",
+        text: "Source",
         topic: `${name}_inputs`,
         options: {    //TODO: make Input config part of instance config/parameters
-          netzwerk: "Netzwerk",
+          "network": "Netzwerk",
           tisch: "Tisch",
           chromecast: "Chromecast",
           pult: "Pult",
@@ -173,15 +138,16 @@ export const onkyo = {
       },
       {
         type: "dropDown",
-        text: "Netzwerksender",
+        text: "Webradios",
         topic: `${name}_radios`,
         options: {
+          Spotify: "Spotify",
           mpd: "MPD",
           kohina: "Kohina",
           somafmDronezone: "Drone Zone (SomaFM)",
           somafmThetrip: "The Trip (SomaFM)",
           querfunk: "Querfunk",
-          somafmDefconradio: "Defcon Radio (SomaFM)",
+          "defcon-128-mp3": "Defcon Radio (SomaFM)",
           somafmSecretagent: "Secret Agent (SomaFM)",
           somafmLush: "Lush (SomaFM)",
           somafmBeatblender: "Beat Blender (Soma FM)",
@@ -194,7 +160,7 @@ export const onkyo = {
         },
         icon: svg(icons.mdiRadio),
         enableCondition: (state) => (state[`${name}_mqtt_connect`] === "connected" && state[`${name}_eiscp_connect`] === "connected")
-          && state.onkyoInputs === "netzwerk"
+          && state[`${name}_inputs`] === "network"
       },
       {
         type: "section",
