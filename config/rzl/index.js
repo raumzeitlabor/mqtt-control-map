@@ -3,7 +3,7 @@ import type { Config } from "config/flowtypes";
 import * as types from "config/types";
 import { hex, rainbow } from "config/colors";
 import { svg, withState } from "config/icon";
-import { wled, tasmota, shelly, shellyRGBW } from "./utils";
+import { wled, tasmota, shelly, shellyRGBW, fritz_thermo } from "./utils";
 import {onkyo} from "./onkyo";
 import * as icons from "@mdi/js";
 
@@ -127,12 +127,14 @@ const config: Config = {
 /************ Lichter (WLEDs) ************/
     wled.topics("infinitymirror","infinitymirror"),
     wled.topics("loungeBacklight","loungeBacklight"),
+    wled.topics("lounge","lounge"),
 /************ Steckdosen (Sonoffs mit Tasmota) ************/
     tasmota.topics("1", "Boiler"),
     tasmota.topics("2", "printerAnnette"),
     tasmota.topics("4", "Infoscreen"),
     tasmota.topics("5", "TelekomSign"),
     tasmota.topics("6", "Textilpresse"),
+    tasmota.topics("7", "LoungeStrom"),
     tasmota.topics("11", "TischMitte"),
     tasmota.topics("12", "TischWhiteboard"),
     tasmota.topics("13", "TischBeamer"),
@@ -166,6 +168,28 @@ const config: Config = {
     onkyo.topics("Onkyo_Workshop", "Onkyo_Workshop"),
     onkyo.topics("Onkyo_Kueche", "Onkyo_Kueche"),
     onkyo.topics("Onkyo_Lounge", "Onkyo_Lounge"),
+/************ Heizungsfoo ********/
+    fritz_thermo.topics("H_Kueche", "Kueche", true),
+    fritz_thermo.topics("S_Kueche", "Kueche/regal", false),
+
+    fritz_thermo.topics("H_LoungeL", "Lounge/links", true),
+    fritz_thermo.topics("H_LoungeR", "Lounge/rechts", true),
+
+    fritz_thermo.topics("H_HauptTardis", "Hauptraum/tardis", true),
+    fritz_thermo.topics("H_HauptBeamer", "Hauptraum/leinwand", true),
+    fritz_thermo.topics("H_HauptMitte", "Hauptraum/mitte", true),
+    fritz_thermo.topics("H_HauptTafel", "Hauptraum/whiteboard", true),
+    fritz_thermo.topics("H_HauptRegal", "Hauptraum/regal", true),
+    fritz_thermo.topics("S_Hauptraum", "Hauptraum/door", false),
+
+    fritz_thermo.topics("H_E-Ecke", "E-Ecke", true),
+    
+    fritz_thermo.topics("H_WorkshopLinks", "Workshop/links", true),
+    fritz_thermo.topics("H_WorkshopMitte", "Workshop/mitte", true),
+    fritz_thermo.topics("H_WorkshopRechts", "Workshop/rechts", true),
+    fritz_thermo.topics("S_Workshop", "Workshop/door", false),
+
+
   ],
 
 /********************************************/
@@ -431,6 +455,19 @@ const config: Config = {
             }
           ]
         },
+        LoungeStrom: {
+          name: "LoungeStrom",
+          position: [600, 540],
+          icon: svg(icons.mdiMultimedia).color(tasmota.iconColor("LoungeStrom")),
+          ui: [
+            {
+              type: "toggle",
+              text: "Fernseher Lounge",
+              topic: "LoungeStrom",
+              icon: svg(icons.mdiPower)
+            }
+          ]
+        },
         Onkyo_Hauptraum: {
           name: "Onkyo Hauptraum",
           position: [300,465],
@@ -441,19 +478,19 @@ const config: Config = {
           name: "Onkyo Workshopraum",
           position: [650,30],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Workshop")),
-          ui: onkyo.controls("Onkyo_Workshop", "http://172.22.36.123")
+          ui: onkyo.controls("Onkyo_Workshop", "http://onkyo-tx-nr555-e0e697.labor.rzl.so")
         },
         Onkyo_Kueche: {
           name: "Onkyo Küche",
           position: [645,500],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Kueche")),
-          ui: onkyo.controls("Onkyo_Kueche", "http://172.22.36.123")
+          ui: onkyo.controls("Onkyo_Kueche", "http://map.rzl")
         },
         Onkyo_Lounge: {
           name: "Onkyo Retrolounge",
           position: [600,570],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Lounge")),
-          ui: onkyo.controls("Onkyo_Lounge", "http://172.22.36.123")
+          ui: onkyo.controls("Onkyo_Lounge", "http://map.rzl")
         },
         SpeakerLicht: {
           name: "Speaker Licht",
@@ -675,21 +712,168 @@ const config: Config = {
             wled.iconColor("infinitymirror")),
             /* eslint-enable camelcase */
           ui: (
-            wled.controls("infinitymirror","http://10.5.0.13/")
+            wled.controls("infinitymirror","http://10.5.0.39/")
           )
         },
         lounge_backlight: {
           name: "WLED lounge Backlight",
-          position: [623, 605],
+          position: [605, 585],
           /* eslint-disable camelcase */
           icon: svg(icons.mdiWhiteBalanceIridescent).color(
             wled.iconColor("loungeBacklight")),
             /* eslint-enable camelcase */
           ui: (
-            wled.controls("loungeBacklight","http://10.5.0.37")
+            wled.controls("loungeBacklight","http://10.5.0.20")
+          )
+        },
+        lounge: {
+          name: "WLED lounge main light",
+          position: [450, 550],
+          /* eslint-disable camelcase */
+          icon: svg(icons.mdiWhiteBalanceIridescent).color(
+            wled.iconColor("lounge")),
+            /* eslint-enable camelcase */
+          ui: (
+            wled.controls("lounge","http://10.5.0.13")
           )
         },
       }
+    },
+    {
+/************ Heizung (FRITZ!DECT ) ************/
+      image: require("./assets/layers/heating.svg"),
+      baseLayer: true,
+      name: "Heating",
+      defaultVisibility: "hidden", //FIXME
+      opacity: 1,
+      bounds: {
+        topLeft: [0, 0],
+        bottomRight: [1030, 718]
+      },
+      controls: {
+        h_kueche: {
+          name: "Heizung Küche",
+          position: [760, 687],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_Kueche")),
+            /* eslint-enable camelcase */
+          ui: (
+            fritz_thermo.controls("H_Kueche")
+          )
+        },
+        s_kueche: {
+          name: "Sensor Küche",
+          position: [660, 550],
+          icon: svg(icons.mdiHomeThermometer).color(fritz_thermo.iconColor("S_Kueche", false)),
+            /* eslint-enable camelcase */
+          ui: (
+            fritz_thermo.controls("S_Kueche")
+          )
+        },
+        H_LoungeL : {
+          name: "Heizung Lounge Links",
+          position: [555, 687],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_LoungeL")),
+          ui: (
+            fritz_thermo.controls("H_LoungeL")
+          )
+        },
+        H_LoungeR : {
+          name: "Heizung Lounge Rechts",
+          position: [430, 687],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_LoungeR")),
+          ui: (
+            fritz_thermo.controls("H_LoungeR")
+          )
+        },
+        H_HauptTardis : {
+          name: "Heizung Hauptraum Tardis",
+          position: [290, 687],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_HauptTardis")),
+          ui: (
+            fritz_thermo.controls("H_HauptTardis")
+          )
+        },
+        H_HauptBeamer : {
+          name: "Heizung Hauptraum Leinwand",
+          position: [30, 500],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_HauptBeamer")),
+          ui: (
+            fritz_thermo.controls("H_HauptBeamer")
+          )
+        },
+        H_HauptMitte : {
+          name: "Heizung Hauptraum Mitte",
+          position: [30, 300],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_HauptMitte")),
+          ui: (
+            fritz_thermo.controls("H_HauptMitte")
+          )
+        },
+        H_HauptTafel : {
+          name: "Heizung Hauptraum Whiteboard",
+          position: [30, 100],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_HauptTafel")),
+          ui: (
+            fritz_thermo.controls("H_HauptTafel")
+          )
+        },
+        H_HauptRegal : {
+          name: "Heizung Hauptraum Regal",
+          position: [270, 25],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_HauptRegal")),
+          ui: (
+            fritz_thermo.controls("H_HauptRegal")
+          )
+        },
+        S_Hauptraum : {
+          name: "Sensor Hauptraum",
+          position: [340, 445],
+          icon: svg(icons.mdiHomeThermometer).color(fritz_thermo.iconColor("S_Hauptraum", false)),
+          ui: (
+            fritz_thermo.controls("S_Hauptraum")
+          )
+        },
+        H_EEcke : {
+          name: "Heizung E-Ecke",
+          position: [490, 25],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_E-Ecke")),
+          ui: (
+            fritz_thermo.controls("H_E-Ecke")
+          )
+        },
+        H_WorkshopLinks : {
+          name: "Heizung Workshopraum Links",
+          position: [700, 25],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_WorkshopLinks")),
+          ui: (
+            fritz_thermo.controls("H_WorkshopLinks")
+          )
+        },
+        H_WorkshopMitte : {
+          name: "Heizung Workshopraum Mitte",
+          position: [800, 25],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_WorkshopMitte")),
+          ui: (
+            fritz_thermo.controls("H_WorkshopMitte")
+          )
+        },
+        H_WorkshopRechts : {
+          name: "Heizung Workshopraum Rechts",
+          position: [915, 25],
+          icon: svg(icons.mdiRadiator).color(fritz_thermo.iconColor("H_WorkshopRechts")),
+          ui: (
+            fritz_thermo.controls("H_WorkshopRechts")
+          )
+        },
+        S_Workshop : {
+          name: "Sensor Workshop",
+          position: [720, 330],
+          icon: svg(icons.mdiHomeThermometer).color(fritz_thermo.iconColor("S_Workshop", false)),
+          ui: (
+            fritz_thermo.controls("S_Workshop")
+          )
+        },
+      } 
     },
     {
       image: require("./assets/layers/labels.svg"),

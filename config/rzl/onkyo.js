@@ -40,7 +40,7 @@ export const onkyo = {
       },
       command: {
         name: `onkyos/${topic}/set/system-power`,
-        type: types.option({ off: "off", on: "on" })
+        type: types.option({ off: "standby", on: "on" })
       },
       defaultValue: "off"
     },
@@ -165,12 +165,6 @@ export const onkyo = {
       {
         type: "section",
         text: "External"
-      },
-      {
-        type: "link",
-        link: "http://mpd.rzl.so/mpd/player/index.php",
-        text: "Open MPD Interface",
-        icon: svg(icons.mdiOpenInNew)
       },
       {
         type: "link",
