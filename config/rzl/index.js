@@ -766,7 +766,7 @@ const config: Config = {
           icon: svg(icons.mdiHomeThermometer).color(fritz_thermo.iconColor("S_Kueche", false)),
             /* eslint-enable camelcase */
           ui: (
-            fritz_thermo.controls("S_Kueche")
+            fritz_thermo.controls("S_Kueche", false)
           )
         },
         H_LoungeL : {
@@ -830,7 +830,7 @@ const config: Config = {
           position: [340, 445],
           icon: svg(icons.mdiHomeThermometer).color(fritz_thermo.iconColor("S_Hauptraum", false)),
           ui: (
-            fritz_thermo.controls("S_Hauptraum")
+            fritz_thermo.controls("S_Hauptraum", false)
           )
         },
         H_EEcke : {
@@ -870,7 +870,7 @@ const config: Config = {
           position: [720, 330],
           icon: svg(icons.mdiHomeThermometer).color(fritz_thermo.iconColor("S_Workshop", false)),
           ui: (
-            fritz_thermo.controls("S_Workshop")
+            fritz_thermo.controls("S_Workshop", false)
           )
         },
       } 

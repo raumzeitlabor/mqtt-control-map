@@ -422,28 +422,34 @@ export const fritz_thermo = {
       defaultValue: "0"
     },
   }),
-  controls: (name: string, webpage: string): Array<ControlUI> => (
-    [{
-      type: "text",
-      text: "Temperature (now)",
-      icon: svg(icons.mdiTemperatureCelsius),
-      topic: `${name}_temp_now`
-    },
-    {
-      type: "text",
-      text: "Temperature (set)",
-      icon: svg(icons.mdiThermometerAuto),
-      topic: `${name}_temp_exp`
-    },
-    {
-      type: "text",
-      text: "Battery",
-      icon: svg(icons.mdiBatteryMedium),
-      topic: `${name}_battery`
-    },
-   ]
-  ),
-  iconColor: (name: string, thermo: Boolean, onCol: Color = hex("#00FF00")): (State => Color) => (
+  controls: (name: string, thermo: boolean = true): Array<ControlUI> => {
+    const controlArray = [
+      {
+        type: "text",
+        text: "Temperature (now)",
+        icon: svg(icons.mdiTemperatureCelsius),
+        topic: `${name}_temp_now`
+      },
+      {
+        type: "text",
+        text: "Temperature (set)",
+        icon: svg(icons.mdiThermometerAuto),
+        topic: `${name}_temp_exp`
+      },
+      {
+        type: "text",
+        text: "Battery",
+        icon: svg(icons.mdiBatteryMedium),
+        topic: `${name}_battery`
+      }
+    ];
+    if (!thermo) {
+      const filteredArray = controlArray.filter(control => control.text !== "Temperature (set)");
+      return filteredArray;
+    }
+    return controlArray;
+  },
+  iconColor: (name: string, thermo: boolean = true, onCol: Color = hex("#00FF00")): (State => Color) => (
     (state: State): Color => {
       if(thermo == false) {
         //is only a sensor
