@@ -81,8 +81,8 @@ const config: Config = {
           type: types.option({
             unreachable: "unavailable",
             booting: "unavailable",
-            "pre_print": "printing",
-            "post_print": "printing",
+            pre_print: "printing",
+            post_print: "printing",
             printing: "printing",
             idle: "idle",
             error: "error",
@@ -90,6 +90,13 @@ const config: Config = {
           })
         },
         defaultValue: "unavailable"
+      },
+      printer3DJobName: {
+        state: {
+          name: "/service/ultimaker/job",
+          type: (msg) => JSON.parse(msg.toString()).name || "unknown"
+        },
+        defaultValue: "unknown"
       },
       printer3DProgresss: {
         state: {
@@ -308,13 +315,19 @@ const config: Config = {
           ui: [
             {
               type: "link",
-              link: "http://ultimaker.rzl/print_jobs",
+              link: "http://ultimaker.rzl.so/print_jobs",
               text: "Open Webinterface",
               icon: svg(icons.mdiOpenInNew)
             },
             {
               type: "section",
               text: "Current Job"
+            },
+            {
+              type: "text",
+              icon: svg(icons.mdiTagOutline),
+              text: " ",
+              topic: "printer3DJobName"
             },
             {
               type: "progress",
