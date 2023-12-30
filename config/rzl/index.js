@@ -82,11 +82,11 @@ const config: Config = {
             unreachable: "unavailable",
             booting: "unavailable",
             pre_print: "printing",
-            post_print: "printing",
+            post_print: "awaitingInteraction",
             printing: "printing",
+            wait_cleanup: "awaitingInteraction",
             idle: "idle",
             error: "error",
-            otherwise: "awaitingInteraction"
           })
         },
         defaultValue: "unavailable"
@@ -195,8 +195,6 @@ const config: Config = {
     fritz_thermo.topics("H_WorkshopMitte", "Workshop/mitte", true),
     fritz_thermo.topics("H_WorkshopRechts", "Workshop/rechts", true),
     fritz_thermo.topics("S_Workshop", "Workshop/door", false),
-
-
   ],
 
 /********************************************/
@@ -295,7 +293,7 @@ const config: Config = {
             },
             {
               type: "link",
-              link: "http://infoscreen.rzl.so",
+              link: "http://monitoring.rzl.so",
               text: "Open Infoscreen",
               icon: svg(icons.mdiOpenInNew)
             }
@@ -306,18 +304,18 @@ const config: Config = {
           position: [890, 35],
           icon: svg(icons.mdiPrinter3d).color(({printer3DStatus}) =>
             ({
-              awaitingInteraction: hex("#b3b300"),
-              printing: hex("#00ff00"),
-              idle: hex("#000000"),
+              awaitingInteraction: hex("#ffdd00"),
+              printing: hex("#ff0000"),
+              idle: hex("#00ff00"),
               unavailable: hex("#888888"),
               error: hex("#ff0000")
             })[printer3DStatus]),
           ui: [
             {
-              type: "link",
-              link: "http://ultimaker.rzl.so/print_jobs",
-              text: "Open Webinterface",
-              icon: svg(icons.mdiOpenInNew)
+              type: "text",
+              icon: svg(icons.mdiStateMachine),
+              text: "Status",
+              topic: "printer3DStatus"
             },
             {
               type: "section",
@@ -342,7 +340,17 @@ const config: Config = {
               text: "Time Left",
               icon: svg(icons.mdiClock),
               topic: "printer3Dremaining"
-            }
+            },
+            {
+              type: "section",
+              text: "more info"
+            },
+            {
+              type: "link",
+              link: "http://ultimaker.rzl.so/print_jobs",
+              text: "Open Webinterface",
+              icon: svg(icons.mdiOpenInNew)
+            },
           ]
         },
         printerAnnette: {
