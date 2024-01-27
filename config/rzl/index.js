@@ -137,7 +137,7 @@ const config: Config = {
     wled.topics("lounge","lounge"),
 /************ Steckdosen (Sonoffs mit Tasmota) ************/
     tasmota.topics("1", "Boiler"),
-    tasmota.topics("2", "printerAnnette"),
+//    tasmota.topics("2", "printerAnnette"),  // BROKEN Sonoff!
     tasmota.topics("4", "Infoscreen"),
     tasmota.topics("5", "TelekomSign"),
     tasmota.topics("6", "Textilpresse"),
@@ -146,6 +146,7 @@ const config: Config = {
     tasmota.topics("12", "TischWhiteboard"),
     tasmota.topics("13", "TischBeamer"),
     tasmota.topics("14", "E-EckeNetworkSwitch"),
+    tasmota.topics("15", "printerAnnette"),
     tasmota.topics("16", "Hauptraum_AV"),
 /************ Lichter (RGBW shellies) ************/
     shellyRGBW.topics("LoungeL", "Lounge_RGBW_links"),
@@ -167,7 +168,7 @@ const config: Config = {
     shelly.topics("Workshop_putzlicht", "Workshop_lichter", "0"),
     shelly.topics("Workshop_buntlicht", "Workshop_lichter", "1"),
     shelly.topics("Hauptraum_putz_white", "Hauptraum_lichter", "0"),
-    shelly.topics("hauptraum_putz_beam", "Hauptraum_lichter", "1"),
+    shelly.topics("Hauptraum_putz_beam", "Hauptraum_lichter", "1"),
     shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"),
     shelly.topics("Speaker_light", "Speaker_light", "0"),
 /************ Onkyos ************/
@@ -578,11 +579,11 @@ const config: Config = {
           name: "Lounge Beleuchtung",
           position: [500, 605],
           icon: svg(icons.mdiLightbulbOn).color(({Lounge_buntlicht, Lounge_putzlicht, LoungeL, LoungeR}) =>
-          (Lounge_buntlicht === "on" ||
+          ((Lounge_buntlicht === "on" ||
           Lounge_putzlicht === "on" ||
           LoungeL === "on" ||
-          LoungeR === "on"
-           ? hex("#00FF00") : shelly.iconColor("Lounge_putzlicht"))),
+          LoungeR === "on")
+           ? hex("#00FF00") : hex("#000000"))),
           ui: [
           {
             type: "toggle",
@@ -650,7 +651,7 @@ const config: Config = {
            WorkF === "on" ||
            WorkM === "on" ||
            WorkB === "on"
-           ? hex("#00FF00") : shelly.iconColor("Workshop_putzlicht"))),
+           ? hex("#00FF00") : hex("#000000"))),
           ui: [
           {
             type: "toggle",
@@ -686,13 +687,13 @@ const config: Config = {
         Hauptraum: {
           name: "Hauptraum Beleuchtung",
           position: [190, 405],
-          icon: svg(icons.mdiLightbulbOn).color(({Hauptraum_buntlicht, Hauptraum_putzlicht}) =>
-          (Hauptraum_buntlicht === "on" ? hex("#00FF00") : (Hauptraum_putzlicht === "on" ? hex("#00FF00") : shelly.iconColor("Hauptraum buntlicht")))),
+          icon: svg(icons.mdiLightbulbOn).color(({Hauptraum_buntlicht, Hauptraum_putz_beam, Hauptraum_putz_white}) =>
+          ((Hauptraum_buntlicht === "on" || Hauptraum_putz_beam === "on" || Hauptraum_putz_white === "on") ? hex("#00FF00") : hex("#000000"))),
           ui: [
           {
             type: "toggle",
             text: "Lichter Beamer",
-            topic: "hauptraum_putz_beam",
+            topic: "Hauptraum_putz_beam",
             icon: svg(icons.mdiPower)
           }, {
             type: "toggle",
