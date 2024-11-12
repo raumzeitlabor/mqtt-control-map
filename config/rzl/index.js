@@ -13,7 +13,7 @@ const config: Config = {
     name: "RZL",
     color: "blue",
 //    mqtt: "ws://10.10.10.209:1884" //DEBUG at home 
-    mqtt: "ws://mqtt.rzl.so:1885"
+    mqtt: "wss://mqtt.rzl.so:1884"
   },
   collapseLayers:false,
   topics: [{
