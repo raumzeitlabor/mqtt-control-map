@@ -5,15 +5,15 @@
 , yarnBuildHook
 , nodejs
 , npmHooks
-, mqtt-control-map
+, src
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "mqtt-control-map-rzl";
   version = "0-unstable-2024-11-12";
 
-  src = mqtt-control-map;
-
+  inherit src;
+  
   yarnOfflineCache = fetchYarnDeps {
     yarnLock = finalAttrs.src + "/yarn.lock";
     hash = "sha256-obd5k7D21T3HGfS6Y+EfjJELAZyJMa8emPscdPGRD3Q=";
