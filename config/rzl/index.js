@@ -135,6 +135,7 @@ const config: Config = {
     wled.topics("infinitymirror","infinitymirror"),
     wled.topics("loungeBacklight","loungeBacklight"),
     wled.topics("lounge","lounge"),
+    wled.topics("nixos","nixos"),
 /************ Steckdosen (Sonoffs mit Tasmota) ************/
 //    tasmota.topics("1", "Boiler"),  // BROKEN Sonoff!
 //    tasmota.topics("2", "printerAnnette"),  // BROKEN Sonoff!
@@ -758,6 +759,17 @@ const config: Config = {
             /* eslint-enable camelcase */
           ui: (
             wled.controls("lounge","http://10.5.0.13")
+          )
+        },
+        nixos: {
+          name: "WLED NixOS light",
+          position: [300, 700],
+          /* eslint-disable camelcase */
+          icon: svg(icons.mdiWhiteBalanceIridescent).color(
+            wled.iconColor("nixos")),
+            /* eslint-enable camelcase */
+          ui: (
+            wled.controls("nixos","http://10.5.0.26")
           )
         },
       }
