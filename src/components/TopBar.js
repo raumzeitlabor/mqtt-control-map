@@ -71,7 +71,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const openOnGithub = () => window.open(
-  "https://github.com/uwap/mqtt-control-map", "_blank");
+  "https://github.com/raumzeitlabor/mqtt-control-map", "_blank");
 
 const TopBar = (props: TopBarProps) => (
   <AppBar position="static" color="primary">
