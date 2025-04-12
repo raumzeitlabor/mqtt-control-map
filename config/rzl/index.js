@@ -140,10 +140,11 @@ const config: Config = {
 //    tasmota.topics("1", "Boiler"),  // BROKEN Sonoff!
 //    tasmota.topics("2", "printerAnnette"),  // BROKEN Sonoff!
     tasmota.topics("4", "Infoscreen"),
-    tasmota.topics("9", "TelekomSign"),
+//    tasmota.topics("5", "TelekomSign"),  // BROKEN Sonoff!!
     tasmota.topics("6", "Textilpresse"),
     tasmota.topics("7", "LoungeStrom"),
     tasmota.topics("8", "Boiler"),
+    tasmota.topics("9", "TelekomSign"),
     tasmota.topics("11", "TischMitte"),
     tasmota.topics("12", "TischWhiteboard"),
     tasmota.topics("13", "TischBeamer"),
