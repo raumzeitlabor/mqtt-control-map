@@ -736,7 +736,7 @@ const config: Config = {
             wled.iconColor("infinitymirror")),
             /* eslint-enable camelcase */
           ui: (
-            wled.controls("infinitymirror","http://10.5.0.39/")
+            wled.controls("infinitymirror","http://wled-infinitymirror.labor.rzl.so")
           )
         },
         lounge_backlight: {
@@ -747,7 +747,7 @@ const config: Config = {
             wled.iconColor("loungeBacklight")),
             /* eslint-enable camelcase */
           ui: (
-            wled.controls("loungeBacklight","http://10.5.0.20")
+            wled.controls("loungeBacklight","http://wled-lounge-backlight.labor.rzl.so")
           )
         },
         lounge: {
@@ -758,7 +758,7 @@ const config: Config = {
             wled.iconColor("lounge")),
             /* eslint-enable camelcase */
           ui: (
-            wled.controls("lounge","http://10.5.0.13")
+            wled.controls("lounge","http://wled-wled-lounge.labor.rzl.so/")
           )
         },
         nixos: {
@@ -769,7 +769,7 @@ const config: Config = {
             wled.iconColor("nixos")),
             /* eslint-enable camelcase */
           ui: (
-            wled.controls("nixos","http://10.5.0.26")
+            wled.controls("nixos","http://wled-nixos.labor.rzl.so")
           )
         },
       }
