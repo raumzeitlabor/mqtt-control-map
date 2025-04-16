@@ -149,7 +149,7 @@ const config: Config = {
     tasmota.topics("12", "TischWhiteboard"),
     tasmota.topics("13", "TischBeamer"),
     tasmota.topics("14", "E-EckeNetworkSwitch"),
-    tasmota.topics("15", "printerAnnette"),
+//    tasmota.topics("15", "XXXXX"),     // Currently Spare
     tasmota.topics("16", "Hauptraum_AV"),
 /************ Lichter (RGBW shellies) ************/
     shellyRGBW.topics("LoungeL", "Lounge_RGBW_links"),
@@ -357,26 +357,20 @@ const config: Config = {
             },
           ]
         },
-        printerAnnette: {
+        printerDoris: {
           name: "Drucker",
           position: [938, 30],
-          icon: svg(icons.mdiPrinter).color(tasmota.iconColor("printerAnnette")),
+          icon: svg(icons.mdiPrinter).color(hex("#00FF00")),
           ui: [
             {
-              type: "toggle",
-              text: "Drucker",
-              topic: "printerAnnette",
-              icon: svg(icons.mdiPower)
-            },
-            {
               type: "link",
-              link: "http://annette.rzl.so/",
-              text: "Open Annette Web",
+              link: "http://doris.rzl.so/",
+              text: "Open Doris Web",
               icon: svg(icons.mdiOpenInNew)
             }
           ]
         },
-        boiler: {
+        Boiler: {
           name: "Boiler",
           position: [1005, 650],
           icon: svg(icons.mdiWaterBoiler).color(tasmota.iconColor("Boiler")),
