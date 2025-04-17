@@ -175,10 +175,9 @@ const config: Config = {
     shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"),
     shelly.topics("Speaker_light", "Speaker_light", "0"),
 /************ Onkyos ************/
-    onkyo.topics("Onkyo_Hauptraum", "Onkyo_Hauptraum"),
-    onkyo.topics("Onkyo_Workshop", "Onkyo_Workshop"),
-    onkyo.topics("Onkyo_Kueche", "Onkyo_Kueche"),
-    onkyo.topics("Onkyo_Lounge", "Onkyo_Lounge"),
+    onkyo.topics("Onkyo_Hauptraum", "hauptraum"),
+    onkyo.topics("Onkyo_Snackregal", "snackregal"),
+    onkyo.topics("Onkyo_Lounge", "lounge"),
 /************ Heizungsfoo ********/
     fritz_thermo.topics("H_Kueche", "Kueche", true),
     fritz_thermo.topics("S_Kueche", "Kueche/regal", false),
@@ -491,25 +490,19 @@ const config: Config = {
           name: "Onkyo Hauptraum",
           position: [300,465],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Hauptraum")),
-          ui: onkyo.controls("Onkyo_Hauptraum", "http://dance-master-5k.labor.rzl.so/")
+          ui: onkyo.controls("Onkyo_Hauptraum", "http://onkyo-hauptraum.rzl.so")
         },
-        Onkyo_Workshop: {
-          name: "Onkyo Workshopraum",
-          position: [650,30],
-          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Workshop")),
-          ui: onkyo.controls("Onkyo_Workshop", "http://onkyo-tx-nr555-e0e697.labor.rzl.so")
-        },
-        Onkyo_Kueche: {
+        Onkyo_Snackregal: {
           name: "Onkyo Küche",
           position: [645,500],
-          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Kueche")),
-          ui: onkyo.controls("Onkyo_Kueche", "http://map.rzl")
+          icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Snackregal")),
+          ui: onkyo.controls("Onkyo_Snackregal", "http://onkyo-snackregal.rzl.so")
         },
         Onkyo_Lounge: {
           name: "Onkyo Retrolounge",
           position: [600,570],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Lounge")),
-          ui: onkyo.controls("Onkyo_Lounge", "http://map.rzl")
+          ui: onkyo.controls("Onkyo_Lounge", "http://onkyo-lounge.rzl.so")
         },
         SpeakerLicht: {
           name: "Speaker Licht",
