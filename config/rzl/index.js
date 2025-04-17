@@ -175,10 +175,9 @@ const config: Config = {
     shelly.topics("Hauptraum_buntlicht", "Hauptraum_buntlicht", "0"),
     shelly.topics("Speaker_light", "Speaker_light", "0"),
 /************ Onkyos ************/
-    onkyo.topics("Onkyo_Hauptraum", "Onkyo_Hauptraum"),
-    onkyo.topics("Onkyo_Workshop", "Onkyo_Workshop"),
-    onkyo.topics("Onkyo_Kueche", "Onkyo_Kueche"),
-    onkyo.topics("Onkyo_Lounge", "Onkyo_Lounge"),
+    onkyo.topics("Onkyo_Hauptraum", "hauptraum"),
+    onkyo.topics("Onkyo_snackregal", "snackregal"),
+    onkyo.topics("Onkyo_Lounge", "lounge"),
 /************ Heizungsfoo ********/
     fritz_thermo.topics("H_Kueche", "Kueche", true),
     fritz_thermo.topics("S_Kueche", "Kueche/regal", false),
