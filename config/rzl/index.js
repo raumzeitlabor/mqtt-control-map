@@ -176,7 +176,7 @@ const config: Config = {
     shelly.topics("Speaker_light", "Speaker_light", "0"),
 /************ Onkyos ************/
     onkyo.topics("Onkyo_Hauptraum", "hauptraum"),
-    onkyo.topics("Onkyo_snackregal", "snackregal"),
+    onkyo.topics("Onkyo_Snackregal", "snackregal"),
     onkyo.topics("Onkyo_Lounge", "lounge"),
 /************ Heizungsfoo ********/
     fritz_thermo.topics("H_Kueche", "Kueche", true),
@@ -502,7 +502,7 @@ const config: Config = {
           name: "Onkyo Retrolounge",
           position: [600,570],
           icon: svg(icons.mdiAudioVideo).color(onkyo.iconColor("Onkyo_Lounge")),
-          ui: onkyo.controls("Onkyo_Lounge", "http://onkyo-loung.rzl.so")
+          ui: onkyo.controls("Onkyo_Lounge", "http://onkyo-lounge.rzl.so")
         },
         SpeakerLicht: {
           name: "Speaker Licht",
